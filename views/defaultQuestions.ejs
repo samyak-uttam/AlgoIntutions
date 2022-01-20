@@ -1,0 +1,28 @@
+<% questionsList.forEach(function(question) { %>
+    <div class="questions-card">
+        <div class="question-title">
+            <h4 class="question-title-text">
+                <a href="#">
+                    <%= question.title %>
+                </a>
+            </h4>
+        </div>
+
+        <div class="question-info">
+            <div class="difficulty-tag">
+                <%= question.difficultTag %>
+            </div>
+            <div class="topic-tag">
+                <% question.topicsTag.forEach(function(topic) { %>
+                    <div class="single-topic">
+                       <%= topic %>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+
+        <div class="question-description">
+            <%= question.description %>
+        </div>
+    </div>
+<% }); %>

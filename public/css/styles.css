@@ -1,3 +1,78 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 body {
   background-color: #EEEEEE;
+}
+
+/* header */
+
+/* Navbar */
+.navbar {
+  height: 3rem;
+  background-color: lightpink;
+}
+
+/* Questions tag list container */
+.questions-tag-list {
+  height: 10rem;
+  width: 80%;
+  margin: auto;
+  background-color: #ccc;
+}
+
+/* default question card list sytling */
+.questions-list {
+  width: 80%;
+  /* height: calc(100vh - 3rem - 3rem - 10rem); */
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.questions-card {
+  margin-top: 2px;
+  margin-bottom: 5px;
+  height: auto;
+  width: 80%;
+  margin: auto;
+  background-color: lightgreen;
+}
+.question-title {
+  margin: 2rem;
+}
+
+.question-title-text > a {
+  font-size: 1.5rem;
+  color: #444;
+  text-decoration: none;
+}
+
+.question-info {
+  display: flex;
+  width: 100%;
+}
+.question-info > * {
+  margin-right: 2rem;
+}
+.topic-tag {
+  display: flex;
+  gap: 2rem;
+}
+
+.question-description {
+  width: 100%;
+}
+
+/* Footer */
+footer {
+  display: flex;
+  align-content: flex-end;
+  height: 3rem;
+  background-color: lightsalmon;
 }
