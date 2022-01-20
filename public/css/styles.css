@@ -9,47 +9,59 @@ body {
   background-color: #EEEEEE;
 }
 
-/* header */
-
 /* Navbar */
 .navbar {
-  height: 3rem;
-  background-color: lightpink;
+  padding: 2px;
+  margin-bottom: 20px;
+}
+
+.navbar-brand {
+  font-size: 2.2rem;
+  font-weight: bold;
+  padding: 0 0 0 30px;
+}
+
+.nav-link {
+  font-size: 1.5rem;
 }
 
 /* Questions tag list container */
-.questions-tag-list {
-  height: 10rem;
-  width: 80%;
-  margin: auto;
-  background-color: #ccc;
+.topics-tag-list {
+  margin: 2% 20%;
+}
+
+.topics-list-card {
+  display: flex;
+}
+
+.topic-tag {
+  background-color: white;
+  border-collapse: separate;
+  border-radius: 8px;
+  margin-right: 10px;
+  padding: 10px;
+}
+
+.topic-title {
+  font-size: 1.2rem;
+  text-decoration: none;
 }
 
 /* default question card list sytling */
 .questions-list {
-  margin: 2rem;
-  width: 80%;
+  margin: 2rem 20%;
   /* height: calc(100vh - 3rem - 3rem - 10rem); */
-  height: auto;
-  margin-left: auto;
-  margin-right: auto;
   display: flex;
   flex-direction: column;
 }
 
 .questions-card {
-  height: 12rem;
-  width: 80%;
-  margin: 50px;
+  margin: 5px auto;
   background-color: #fff;
 }
-.question-title {
-  margin-top: 2rem;
-  margin-left: 1rem;
-  margin-bottom: 0.8rem;
-}
-.question-description {
-  margin: 1rem;
+
+.card-body {
+  margin: 0.5rem;
 }
 .question-title-text > a {
   font-size: 1.5rem;
@@ -60,8 +72,7 @@ body {
 .question-info {
   display: flex;
   align-content: center;
-  width: 100%;
-  margin-left: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .difficulty-tag > a {
@@ -88,8 +99,8 @@ body {
 
 /* Footer */
 footer {
-  display: flex;
-  align-content: flex-end;
+  padding: 10px;
   height: 3rem;
   background-color: lightsalmon;
+  text-align: center;
 }
