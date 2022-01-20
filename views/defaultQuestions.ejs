@@ -10,13 +10,15 @@
 
         <div class="question-info">
             <div class="difficulty-tag">
-                <%= question.difficultTag %>
+                <a href="#">
+                    <%= question.difficultTag %>
+                </a>
             </div>
-            <div class="topic-tag">
+            <div class="topics-tag">
                 <% question.topicsTag.forEach(function(topic) { %>
-                    <div class="single-topic">
-                       <%= topic %>
-                    </div>
+                    <span class="topic">
+                        <a href="#"><%= topic %></a>
+                    </span>
                 <% }) %>
             </div>
         </div>

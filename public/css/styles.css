@@ -27,8 +27,10 @@ body {
 
 /* default question card list sytling */
 .questions-list {
+  margin: 2rem;
   width: 80%;
   /* height: calc(100vh - 3rem - 3rem - 10rem); */
+  height: auto;
   margin-left: auto;
   margin-right: auto;
   display: flex;
@@ -36,17 +38,19 @@ body {
 }
 
 .questions-card {
-  margin-top: 2px;
-  margin-bottom: 5px;
-  height: auto;
+  height: 12rem;
   width: 80%;
-  margin: auto;
-  background-color: lightgreen;
+  margin: 50px;
+  background-color: #fff;
 }
 .question-title {
-  margin: 2rem;
+  margin-top: 2rem;
+  margin-left: 1rem;
+  margin-bottom: 0.8rem;
 }
-
+.question-description {
+  margin: 1rem;
+}
 .question-title-text > a {
   font-size: 1.5rem;
   color: #444;
@@ -55,16 +59,29 @@ body {
 
 .question-info {
   display: flex;
+  align-content: center;
   width: 100%;
-}
-.question-info > * {
-  margin-right: 2rem;
-}
-.topic-tag {
-  display: flex;
-  gap: 2rem;
+  margin-left: 1rem;
 }
 
+.difficulty-tag > a {
+  font-size: 1.2rem;
+  color: rgb(38, 36, 36);
+  margin-right: 2rem;
+  text-decoration: none;
+}
+.topics-tag {
+  gap: 0.5rem;
+  display: flex;
+}
+.topic {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+.topic > a {
+  text-decoration: none;
+}
 .question-description {
   width: 100%;
 }
