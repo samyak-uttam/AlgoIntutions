@@ -13,7 +13,7 @@ async function clientConnect() {
     await client.connect();
     console.log("Client connected successfully.");
   } catch (err) {
-    console.error(err.message)
+    console.log(err)
   }
 }
 
@@ -22,7 +22,7 @@ async function clientDisConnect() {
     await client.end();
     console.log("Client disconnected successfully.");
   } catch (err) {
-    console.error(err.message);
+    console.log(err);
   }
 }
 
@@ -31,23 +31,26 @@ async function readQuestions(columns) {
     const allQuestions = await client.query("SELECT " + columns + " from questions");
     return allQuestions;
   } catch (err) {
-    console.error(err.message);
+    console.log(err);
   }
 }
 
 async function readQuesByTag(columns, tag) {
   try {
-    const singleQuestion = await client.query("SELECT " + columns + " from questions where ($1) = ANY(tags)", tag);
-    return singleQuestion;
+    const tagedQuestions = await client.query("SELECT " + columns + " from questions where ($1) = ANY(tags)", tag);
+    return tagedQuestions;
   } catch (err) {
-    console.error(err.message);
+    console.log(err);
   }
 }
 
-async function insertQuestion(questionArr) {
-  await client.query("INSERT INTO questions VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)", questionArr)
-    .then(() => console.log("Question inserted successfully."))
-    .catch(e => console.log("Error occured during insertion: " + e));
+async function insertQuestion(questionPropertiesArr, questionValuesArr) {
+  try {
+    await client.query("INSERT INTO questions ("+ questionPropertiesArr +") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)", questionValuesArr);
+    console.log('Question inserted successfully!');
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 module.exports = {

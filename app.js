@@ -6,8 +6,9 @@ const app = express();
 
 app.set("view engine", "ejs");
 
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static("public"));
+app.use(bodyParser.urlencoded({extended: true})); 
+app.use(express.static("public"));  
+app.use(express.json());
 
 dbOperations.clientConnect();
 
@@ -19,48 +20,82 @@ const difficulties = ["Easy", "Medium", "Hard"]
 
 // get All the questions
 app.get("/", async function(req, res) {
-  let list = await dbOperations.readQuestions(["title", "difficulty", "tags", "explanation"]);
-  let questions = [];
-  list.rows.forEach(function(ques) {
-    questions.push({
-      title: ques.title,
-      difficultTag: difficulties[ques.difficulty],
-      topicsTag: ques.tags,
-      description: ques.explanation
+  try {
+    let list = await dbOperations.readQuestions(["title", "difficulty", "tags", "explanation"]);
+    let questions = [];
+    list.rows.forEach(function(ques) {
+      questions.push({
+        title: ques.title,
+        difficultTag: difficulties[ques.difficulty],
+        topicsTag: ques.tags,
+        description: ques.explanation
+      });
     });
-  });
-  res.render("home", {
-    questionsList: questions,
-    categories: categories
-  });
+    res.render("home", {
+      questionsList: questions,
+      categories: categories
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // Get all questions for a particular tag
 app.get("/category/:categoryName", async function(req, res) {
-  let categoryName = req.params.categoryName;
-  let list = await dbOperations.readQuesByTag(["title", "difficulty", "tags", "explanation"], [categoryName]);
-  let questions = [];
-  list.rows.forEach(function(ques) {
-    questions.push({
-      title: ques.title,
-      difficultTag: difficulties[ques.difficulty],
-      topicsTag: ques.tags,
-      description: ques.explanation
+  try {
+    let categoryName = req.params.categoryName;
+    let list = await dbOperations.readQuesByTag(["title", "difficulty", "tags", "explanation"], [categoryName]);
+    let questions = [];
+    list.rows.forEach(function(ques) {
+      questions.push({
+        title: ques.title,
+        difficultTag: difficulties[ques.difficulty],
+        topicsTag: ques.tags,
+        description: ques.explanation
+      });
     });
-  });
-  res.render("category", {
-    categoryName: categoryName,
-    questionsList: questions,
-    categories: categories
-  });
+    res.render("category", {
+      categoryName: categoryName,
+      questionsList: questions,
+      categories: categories
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
+app.get("/question/add-question", function(req, res) {
+  res.render("createQuestion", {
+    questionTitle: "Create Question",
+    categories: categories
+  });
+})
+
+// Get single question
 app.get("/:questionTitle", function(req, res) {
   let questionTitle = req.params.questionTitle;
   res.render("question", {
     questionTitle: questionTitle,
     categories: categories
   });
+});
+
+
+// Create a question
+app.post("/admin", async function(req, res) {
+  try {
+    const dataObj = req.body;
+    let questionPropertiesArr = [] ,questionValuesArr = [];
+    for (const property in dataObj){
+      questionPropertiesArr.push(property);
+      questionValuesArr.push(dataObj[property]);
+    }
+    console.log(questionPropertiesArr);
+    console.log(questionValuesArr);
+    await dbOperations.insertQuestion(questionPropertiesArr, questionValuesArr);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 const server = app.listen(3000, function() {
@@ -88,3 +123,4 @@ process.on('SIGUSR2', exitHandler.bind(null, {exit: true}));
 
 //catches uncaught exceptions
 process.on('uncaughtException', exitHandler.bind(null, {exit: true}));
+
