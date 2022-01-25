@@ -32,3 +32,6 @@ ALTER TABLE IF EXISTS public.questions
 
 SELECT * FROM questions;
 
+-- Granting priveleges in ubuntu
+GRANT ALL PRIVILEGES ON TABLE questions TO admin64;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO admin64;

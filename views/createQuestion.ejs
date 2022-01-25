@@ -3,4 +3,67 @@
     <h1><%= questionTitle %></h1>
 </div>
 
+<form action="/admin" method="post">
+    <div class="form-group">
+      <label for="formGroupExampleInput">Title</label>
+      <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Enter title" name="title">
+    </div>
+    <div class="form-group">
+      <label for="formGroupExampleInput2">Difficulty</label>
+      <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Enter between 0, 1, 2 as easy, medium, hard" name="difficulty">
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Explanation</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="explanation"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Intuition</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="intuition"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Approach</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="approach"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Image Links</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="imageLinks"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Cpp Code</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="codeCpp"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Java Code</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="codeJava"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Code Python</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="codePython"></textarea>
+    </div><div class="form-group">
+        <label for="exampleFormControlTextarea1">Description</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="description"></textarea>
+    </div>
+    <input type="hidden" name="numLikes" value=0>
+    </div><div class="form-group">
+        <label for="exampleFormControlTextarea1">Tags</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" name="tags" placeholder="Enter tags with comma seperated without any space"></textarea>
+    </div>
+    <!-- <select class="select" multiple data-mdb-filter="true">
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+        <option value="4">Four</option>
+        <option value="5">Five</option>
+        <option value="6">Six</option>
+        <option value="7">Seven</option>
+        <option value="8">Eight</option>
+        <option value="9">Nine</option>
+        <option value="10">Ten</option>
+    </select> -->
+    <div class="button-cont">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+
 <%- include("partials/footer"); -%>

@@ -83,19 +83,33 @@ app.get("/:questionTitle", function(req, res) {
 
 // Create a question
 app.post("/admin", async function(req, res) {
+  // console.log(req.body);
+
   try {
     const dataObj = req.body;
     let questionPropertiesArr = [] ,questionValuesArr = [];
     for (const property in dataObj){
       questionPropertiesArr.push(property);
-      questionValuesArr.push(dataObj[property]);
+      let dataValue;
+      if (property === "imageLinks") {
+        dataValue = dataObj[property].split(' ');
+      }
+      else if (property === "tags") {
+        dataValue = dataObj[property].split(',');
+      } else {
+        dataValue = dataObj[property];
+      }
+      questionValuesArr.push(dataValue);
     }
+
     console.log(questionPropertiesArr);
     console.log(questionValuesArr);
     await dbOperations.insertQuestion(questionPropertiesArr, questionValuesArr);
   } catch (err) {
     console.log(err);
   }
+
+  res.redirect(301, "/question/add-question");
 });
 
 const server = app.listen(3000, function() {
@@ -123,4 +137,3 @@ process.on('SIGUSR2', exitHandler.bind(null, {exit: true}));
 
 //catches uncaught exceptions
 process.on('uncaughtException', exitHandler.bind(null, {exit: true}));
-
