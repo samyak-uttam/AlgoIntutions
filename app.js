@@ -1,6 +1,5 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
 const dbOperations = require(__dirname + "/dbOperations.js");
 
 const app = express();
@@ -16,6 +15,9 @@ dbOperations.clientConnect();
 const categories = ["Array", "Binary Tree", "Dynamic Programming", "Graph", "Greedy", "Queue", "Stack", "String"];
 const difficulties = ["Easy", "Medium", "Hard"]
 
+// ROUTES //
+
+// get All the questions
 app.get("/", async function(req, res) {
   let list = await dbOperations.readQuestions(["title", "difficulty", "tags", "explanation"]);
   let questions = [];
@@ -33,9 +35,10 @@ app.get("/", async function(req, res) {
   });
 });
 
+// Get all questions for a particular tag
 app.get("/category/:categoryName", async function(req, res) {
   let categoryName = req.params.categoryName;
-  let list = await dbOperations.readQuesByTag(["title", "difficulty", "tags", "explanation"], ['array']);
+  let list = await dbOperations.readQuesByTag(["title", "difficulty", "tags", "explanation"], [categoryName]);
   let questions = [];
   list.rows.forEach(function(ques) {
     questions.push({
