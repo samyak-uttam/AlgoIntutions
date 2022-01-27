@@ -1,10 +1,56 @@
 <%- include("partials/header"); -%>
 
-<div class="heading">
-    <h1><%= questionTitle %></h1>
+<div class="question-card card">
+  <div class="card-body">
+    <h1><%= question.title %></h1>
+    <div class="question-info">
+      <div class="difficulty-tag">
+        <a href="#">
+          <%= question.difficulty %>
+        </a>
+      </div>
+      <div class="topics-tag">
+        <% question.tags.forEach(function(topic) { %>
+        <span class="topic">
+          <a href="/category/<%= topic %>"><%= topic %></a>
+        </span>
+        <% }) %>
+      </div>
+    </div>
+    <p><%= question.explanation %></p>
+    <br>
+    <h2>Solution:</h2>
+    <p><%= question.intuition %></p>
+    <p><%= question.approach %></p>
+    <div class="container">
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab">
+          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#cpp-code" type="button">C++</button>
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#java-code" type="button">Java</button>
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#python-code" type="button">Python</button>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div id="cpp-code" class="tab-pane show active">
+          <pre class="line-numbers">
+              <code class="language-cpp"><%= question.codecpp %></code>
+          </pre>
+        </div>
+        <div id="java-code" class="tab-pane fade">
+          <pre class="line-numbers">
+              <code class="language-java"><%= question.codejava %></code>
+          </pre>
+        </div>
+        <div id="python-code" class="tab-pane fade">
+          <pre class="line-numbers">
+              <code class="language-python"><%= question.codepython %></code>
+          </pre>
+        </div>
+      </div>
+    </div>
+    <br>
+    <p><%= question.description %></p>
+  </div>
 </div>
 
-<div class="code">
-    
-</div>
 <%- include("partials/footer"); -%>

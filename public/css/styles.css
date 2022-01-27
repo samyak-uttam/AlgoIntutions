@@ -155,3 +155,9 @@ textarea {
 
   /* resize: none;   text area resize option disabled */
 }
+
+/* question page */
+.question-card {
+  margin: 0 20%;
+  font-size: 1.2rem;
+}

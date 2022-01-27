@@ -1,9 +1,9 @@
 const {Client} = require('pg');
 const client = new Client({
   // comment my credentials for development :)
-  user: "admin64",
+  user: "postgres",
   host: "localhost",
-  password: "751101@admin",
+  password: "postgres",
   port: 5432,
   database: "algointutions"
 });
@@ -21,6 +21,15 @@ async function clientDisConnect() {
   try {
     await client.end();
     console.log("Client disconnected successfully.");
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function readSingleQues(columns, title) {
+  try {
+    const question = await client.query("SELECT " + columns + " from questions where title = ($1)", title);
+    return question;
   } catch (err) {
     console.log(err);
   }
@@ -56,7 +65,8 @@ async function insertQuestion(questionPropertiesArr, questionValuesArr) {
 module.exports = {
   clientConnect,
   clientDisConnect,
-  readQuesByTag,
+  readSingleQues,
   readQuestions,
+  readQuesByTag,
   insertQuestion
 }

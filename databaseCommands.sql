@@ -1,5 +1,5 @@
 CREATE DATABASE algointutions
-    WITH 
+    WITH
     OWNER = admin64
     ENCODING = 'UTF8'
     CONNECTION LIMIT = -1;
@@ -8,24 +8,23 @@ CREATE DATABASE algointutions
 
 -- DROP TABLE IF EXISTS public.questions;
 
-CREATE TABLE IF NOT EXISTS public.questions
+CREATE TABLE public.questions
 (
-    question_id SERIAL PRIMARY KEY NOT NULL, 
-    title character varying COLLATE pg_catalog."default" NOT NULL,
-    difficulty integer DEFAULT 0,
-    explanation text COLLATE pg_catalog."default",
-    intuition text COLLATE pg_catalog."default",
-    approach text COLLATE pg_catalog."default",
-    imageLinks character varying[] COLLATE pg_catalog."default",
-    codeCpp text COLLATE pg_catalog."default",
-    codeJava text COLLATE pg_catalog."default",
-    codePython text COLLATE pg_catalog."default",
-    description text COLLATE pg_catalog."default",
+    question_id serial NOT NULL,
+    title character varying NOT NULL,
+    difficulty character varying NOT NULL,
+    explanation text NOT NULL,
+    intuition text,
+    approach text,
+    imageLinks character varying[],
+    codeCpp text,
+    codeJava text,
+    codePython text,
+    description text,
     numLikes integer DEFAULT 0,
-    tags character varying[] COLLATE pg_catalog."default"
+    tags character varying[],
+    PRIMARY KEY (question_id)
 );
-
-TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.questions
     OWNER to admin64;

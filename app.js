@@ -6,8 +6,8 @@ const app = express();
 
 app.set("view engine", "ejs");
 
-app.use(bodyParser.urlencoded({extended: true})); 
-app.use(express.static("public"));  
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
 app.use(express.json());
 
 dbOperations.clientConnect();
@@ -21,18 +21,9 @@ const difficulties = ["Easy", "Medium", "Hard"]
 // get All the questions
 app.get("/", async function(req, res) {
   try {
-    let list = await dbOperations.readQuestions(["title", "difficulty", "tags", "explanation"]);
-    let questions = [];
-    list.rows.forEach(function(ques) {
-      questions.push({
-        title: ques.title,
-        difficultTag: difficulties[ques.difficulty],
-        topicsTag: ques.tags,
-        description: ques.explanation
-      });
-    });
+    let questions = await dbOperations.readQuestions(["title", "difficulty", "tags", "explanation"]);
     res.render("home", {
-      questionsList: questions,
+      questionsList: questions.rows,
       categories: categories
     });
   } catch (err) {
@@ -44,19 +35,10 @@ app.get("/", async function(req, res) {
 app.get("/category/:categoryName", async function(req, res) {
   try {
     let categoryName = req.params.categoryName;
-    let list = await dbOperations.readQuesByTag(["title", "difficulty", "tags", "explanation"], [categoryName]);
-    let questions = [];
-    list.rows.forEach(function(ques) {
-      questions.push({
-        title: ques.title,
-        difficultTag: difficulties[ques.difficulty],
-        topicsTag: ques.tags,
-        description: ques.explanation
-      });
-    });
+    let questions = await dbOperations.readQuesByTag(["title", "difficulty", "tags", "explanation"], [categoryName]);
     res.render("category", {
       categoryName: categoryName,
-      questionsList: questions,
+      questionsList: questions.rows,
       categories: categories
     });
   } catch (err) {
@@ -69,22 +51,20 @@ app.get("/question/add-question", function(req, res) {
     questionTitle: "Create Question",
     categories: categories
   });
-})
+});
 
 // Get single question
-app.get("/:questionTitle", function(req, res) {
+app.get("/question/:questionTitle", async function(req, res) {
   let questionTitle = req.params.questionTitle;
+  let question = await dbOperations.readSingleQues("*", [questionTitle]);
   res.render("question", {
-    questionTitle: questionTitle,
+    question: question.rows[0],
     categories: categories
   });
 });
 
-
 // Create a question
 app.post("/admin", async function(req, res) {
-  // console.log(req.body);
-
   try {
     const dataObj = req.body;
     let questionPropertiesArr = [] ,questionValuesArr = [];
@@ -108,7 +88,6 @@ app.post("/admin", async function(req, res) {
   } catch (err) {
     console.log(err);
   }
-
   res.redirect(301, "/question/add-question");
 });
 

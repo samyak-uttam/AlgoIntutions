@@ -3,7 +3,7 @@
     <div class="card-body">
       <div class="question-title">
         <h4 class="question-title-text">
-          <a href="/<%= question.title %>">
+          <a href="/question/<%= question.title %>">
             <%= question.title %>
           </a>
         </h4>
@@ -12,20 +12,20 @@
       <div class="question-info">
         <div class="difficulty-tag">
           <a href="#">
-            <%= question.difficultTag %>
+            <%= question.difficulty %>
           </a>
         </div>
         <div class="topics-tag">
-          <% question.topicsTag.forEach(function(topic) { %>
+          <% question.tags.forEach(function(topic) { %>
           <span class="topic">
-            <a href="#"><%= topic %></a>
+            <a href="/category/<%= topic %>"><%= topic %></a>
           </span>
           <% }) %>
         </div>
       </div>
 
       <div class="question-description">
-        <%= question.description %>
+        <%= question.explanation %>
       </div>
     </div>
   </div>
