@@ -31,6 +31,21 @@ app.get("/", async function(req, res) {
   }
 });
 
+// Get all questions for a particular difficulty level
+app.get("/tag/:difficulty", async function(req, res) {
+  try {
+    let difficulty = req.params.difficulty;
+    let questions = await dbOperations.readQuesByDifficulty(["title", "difficulty", "tags", "explanation"], [difficulty]);
+    res.render("category", {
+      categoryName: difficulty,
+      questionsList: questions.rows,
+      categories: categories
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // Get all questions for a particular tag
 app.get("/category/:categoryName", async function(req, res) {
   try {

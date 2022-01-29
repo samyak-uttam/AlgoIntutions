@@ -46,8 +46,17 @@ async function readQuestions(columns) {
 
 async function readQuesByTag(columns, tag) {
   try {
-    const tagedQuestions = await client.query("SELECT " + columns + " from questions where ($1) = ANY(tags)", tag);
-    return tagedQuestions;
+    const taggedQuestions = await client.query("SELECT " + columns + " from questions where ($1) = ANY(tags)", tag);
+    return taggedQuestions;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function readQuesByDifficulty(columns, difficulty) {
+  try {
+    const questions = await client.query("SELECT " + columns + " from questions where difficulty = ($1)", difficulty);
+    return questions;
   } catch (err) {
     console.log(err);
   }
@@ -67,6 +76,7 @@ module.exports = {
   clientDisConnect,
   readSingleQues,
   readQuestions,
+  readQuesByDifficulty,
   readQuesByTag,
   insertQuestion
 }
