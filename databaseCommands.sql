@@ -6,7 +6,7 @@ CREATE DATABASE algointutions
 
 -- Table: public.questions
 
--- DROP TABLE IF EXISTS public.questions;
+DROP TABLE IF EXISTS public.questions;
 
 CREATE TABLE public.questions
 (

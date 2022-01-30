@@ -160,4 +160,23 @@ textarea {
 .question-card {
   margin: 0 20%;
   font-size: 1.2rem;
+  margin-bottom: 1rem;
+  min-height: calc(100vh - 3rem - 4rem - 1rem - 1rem);
+}
+
+.heading-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-spacing {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
 }

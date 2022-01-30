@@ -1,9 +1,9 @@
 const {Client} = require('pg');
 const client = new Client({
   // comment my credentials for development :)
-  user: "postgres",
+  user: "admin64",
   host: "localhost",
-  password: "postgres",
+  password: "751101@admin",
   port: 5432,
   database: "algointutions"
 });
@@ -71,6 +71,14 @@ async function insertQuestion(questionPropertiesArr, questionValuesArr) {
   }
 }
 
+async function deleteQuestion(id) {
+  try {
+    await client.query("DELETE FROM questions WHERE question_id = $1", [id]);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 module.exports = {
   clientConnect,
   clientDisConnect,
@@ -78,5 +86,6 @@ module.exports = {
   readQuestions,
   readQuesByDifficulty,
   readQuesByTag,
-  insertQuestion
+  insertQuestion,
+  deleteQuestion
 }

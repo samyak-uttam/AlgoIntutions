@@ -1,0 +1,21 @@
+<% questionsList.forEach(function(question) { %>
+    <div class="questions-card card">
+      <div class="card-body">
+        <div class="question-title">
+          <h4 class="question-title-text">
+            <a href="/question/<%= question.title %>">
+              <%= question.title %>
+            </a>
+          </h4>
+        </div>
+        <div class="question-description">
+          <%= question.explanation %>
+        </div>
+      </div>
+      <div class="btn-container">
+        <a class="btn btn-primary btn-spacing" href="/admin/<%=question.question_id%>?_method=PUT" role="button">Update</a>
+        <a class="btn btn-danger btn-spacing" href="/admin/<%=question.question_id%>?_method=DELETE" role="button">Delete</a>
+      </div>
+    </div>
+<% }); %>
+  

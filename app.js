@@ -18,6 +18,14 @@ const difficulties = ["Easy", "Medium", "Hard"]
 
 // ROUTES //
 
+app.use(function(req, res, next) {
+  if ( req.query._method == 'DELETE' ) {
+    req.method = 'DELETE';
+    req.url = req.path;
+  }       
+  next(); 
+});
+
 // get All the questions
 app.get("/", async function(req, res) {
   try {
@@ -61,17 +69,15 @@ app.get("/category/:categoryName", async function(req, res) {
   }
 });
 
-app.get("/question/add-question", function(req, res) {
-  res.render("createQuestion", {
-    questionTitle: "Create Question",
-    categories: categories
-  });
-});
-
 // Get single question
 app.get("/question/:questionTitle", async function(req, res) {
   let questionTitle = req.params.questionTitle;
+  console.log(questionTitle);
   let question = await dbOperations.readSingleQues("*", [questionTitle]);
+  if (question === undefined) {
+    res.redirect(404, "/404");
+  }
+  console.log(question.rows[0]);
   res.render("question", {
     question: question.rows[0],
     categories: categories
@@ -79,6 +85,13 @@ app.get("/question/:questionTitle", async function(req, res) {
 });
 
 // Create a question
+app.get("/admin/add-question", function(req, res) {
+  res.render("createQuestion", {
+    questionTitle: "Create Question",
+    categories: categories
+  });
+});
+
 app.post("/admin", async function(req, res) {
   try {
     const dataObj = req.body;
@@ -97,14 +110,45 @@ app.post("/admin", async function(req, res) {
       questionValuesArr.push(dataValue);
     }
 
-    console.log(questionPropertiesArr);
-    console.log(questionValuesArr);
+    // console.log(questionPropertiesArr);
+    // console.log(questionValuesArr);
     await dbOperations.insertQuestion(questionPropertiesArr, questionValuesArr);
   } catch (err) {
     console.log(err);
   }
-  res.redirect(301, "/question/add-question");
+  res.redirect(301, "/admin/add-question");
 });
+
+// Update question
+app.get("/admin/update-question", async function(req, res) {
+  // bring all the question and display it to the user
+  const columns = ["question_id", "title", "explanation"];
+  const questions = await dbOperations.readQuestions(columns);
+  console.log(questions);
+  res.render("updatePageQuestions", {
+    questionsList: questions.rows,
+    categories: categories
+  });
+});
+
+
+// delete question
+app.delete("/admin/:id", async function(req, res) {
+  const {id} = req.params;
+  try {
+    await dbOperations.deleteQuestion(id);
+    console.log('Question deleted successfully!');
+  } catch (err) {
+    console.log(err);
+  }
+})
+
+// page Not found
+app.get("/404", function(req, res) {
+  res.render("404", {
+    categories: categories
+  });
+})
 
 const server = app.listen(3000, function() {
   console.log("Server started on port 3000");
