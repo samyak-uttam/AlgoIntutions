@@ -126,9 +126,12 @@ app.get("/admin/update-question/:id", async function(req, res) {
   } catch (err) {
     console.log(err);
   }
-  res.json(question.rows[0]);
-  // redirect to form update page, since data have been fetched
-  // make a seperate ejs file for it
+  
+  console.log(question.rows[0]);
+  res.render("updateQuestionForm", {
+    question: question.rows[0],
+    categories: categories
+  });
 });
 
 // Update question
@@ -136,11 +139,9 @@ app.put("/admin/:id", async function(req, res) {
   const {id} = req.params;
   try {
     const dataObj = req.body;
-    const {questionPropertiesArr, questionValuesArr} = getBodyPropertiesAndValues(dataObj, false);
-    console.log(questionPropertiesArr);
-    console.log(questionValuesArr);
+    const {questionPropertiesArr, questionValuesArr} = getBodyPropertiesAndValues(dataObj);
+    
     await dbOperations.updateQuestion(id, questionPropertiesArr, questionValuesArr);
-    console.log('Question Updated Successfully!');
   } catch (err) {
     console.log(err);
   }
@@ -153,7 +154,6 @@ app.delete("/admin/:id", async function(req, res) {
   const {id} = req.params;
   try {
     await dbOperations.deleteQuestion(id);
-    console.log('Question deleted successfully!');
   } catch (err) {
     console.log(err);
   }

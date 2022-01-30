@@ -74,6 +74,7 @@ async function insertQuestion(questionPropertiesArr, questionValuesArr) {
 async function deleteQuestion(id) {
   try {
     await client.query("DELETE FROM questions WHERE question_id = $1", [id]);
+    console.log('Question deleted successfully!');
   } catch (err) {
     console.log(err);
   }
@@ -89,15 +90,15 @@ async function getAllFieldsSingleQuestion(id) {
 }
 
 async function updateQuestion(id, questionPropertiesArr, questionValuesArr) {
-  let i = 1;
+  let i = 0;
   for (; i < questionPropertiesArr.length; i++) {
-    let tempString = questionPropertiesArr[i] +'=$'+ `${i}`;
+    let tempString = questionPropertiesArr[i] +'=$'+ `${i + 1}`;
     questionPropertiesArr[i] = tempString;
   }
-  questionPropertiesArr.shift();
-  questionValuesArr.shift();
+
   try {
     await client.query("UPDATE questions SET "+ questionPropertiesArr +" WHERE question_id = $13", [...questionValuesArr, id]);
+    console.log('Question Updated Successfully!');
   } catch (err) {
     console.log(err);
   }

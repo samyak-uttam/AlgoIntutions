@@ -1,0 +1,57 @@
+<%- include("partials/header"); -%>
+<div class="heading">
+    <h1>Update Question</h1>
+</div>
+
+<form action="/admin/<%=question.question_id%>?_method=PUT" method="POST">
+    <div class="form-group">
+      <label for="formGroupExampleInput">Title</label>
+      <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Enter title" name="title" value="<%=question.title%>">
+    </div>
+    <div class="form-group">
+      <label for="formGroupExampleInput2">Difficulty</label>
+      <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Easy, medium or hard" name="difficulty" value="<%=question.difficulty%>">
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Explanation</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="explanation"><%=question.explanation%></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Intuition</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="intuition"><%=question.intuition%></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Approach</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="approach"><%=question.approach%></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Image Links</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="imageLinks"><%=question.imagelinks%></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Cpp Code</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="codeCpp"><%=question.codecpp%></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Java Code</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="codeJava"><%=question.codejava%></textarea>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Code Python</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="codePython"><%=question.codepython%></textarea>
+    </div><div class="form-group">
+        <label for="exampleFormControlTextarea1">Description</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name="description" ><%=question.description%></textarea>
+    </div>
+    <input type="hidden" name="numLikes" value=<%=question.numlikes%>>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Tags</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" name="tags" placeholder="Enter tags with comma seperated without any space"><%=question.tags%></textarea>
+    </div>
+    <div class="button-cont">
+        <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+</form>
+
+
+<%- include("partials/footer"); -%>
