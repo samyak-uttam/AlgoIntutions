@@ -79,6 +79,30 @@ async function deleteQuestion(id) {
   }
 }
 
+async function getAllFieldsSingleQuestion(id) {
+  try {
+    const questionDetails = await client.query("SELECT * FROM questions WHERE question_id = $1", [id]);
+    return questionDetails;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function updateQuestion(id, questionPropertiesArr, questionValuesArr) {
+  let i = 1;
+  for (; i < questionPropertiesArr.length; i++) {
+    let tempString = questionPropertiesArr[i] +'=$'+ `${i}`;
+    questionPropertiesArr[i] = tempString;
+  }
+  questionPropertiesArr.shift();
+  questionValuesArr.shift();
+  try {
+    await client.query("UPDATE questions SET "+ questionPropertiesArr +" WHERE question_id = $13", [...questionValuesArr, id]);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 module.exports = {
   clientConnect,
   clientDisConnect,
@@ -87,5 +111,7 @@ module.exports = {
   readQuesByDifficulty,
   readQuesByTag,
   insertQuestion,
-  deleteQuestion
+  deleteQuestion,
+  getAllFieldsSingleQuestion,
+  updateQuestion
 }

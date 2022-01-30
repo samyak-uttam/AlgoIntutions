@@ -19,10 +19,13 @@ const difficulties = ["Easy", "Medium", "Hard"]
 // ROUTES //
 
 app.use(function(req, res, next) {
-  if ( req.query._method == 'DELETE' ) {
+  if (req.query._method == 'DELETE') {
     req.method = 'DELETE';
     req.url = req.path;
-  }       
+  } else if (req.query._method == 'PUT') {
+    req.method = 'PUT';
+    req.url = req.path;
+  }      
   next(); 
 });
 
@@ -74,10 +77,6 @@ app.get("/question/:questionTitle", async function(req, res) {
   let questionTitle = req.params.questionTitle;
   console.log(questionTitle);
   let question = await dbOperations.readSingleQues("*", [questionTitle]);
-  if (question === undefined) {
-    res.redirect(404, "/404");
-  }
-  console.log(question.rows[0]);
   res.render("question", {
     question: question.rows[0],
     categories: categories
@@ -95,23 +94,8 @@ app.get("/admin/add-question", function(req, res) {
 app.post("/admin", async function(req, res) {
   try {
     const dataObj = req.body;
-    let questionPropertiesArr = [] ,questionValuesArr = [];
-    for (const property in dataObj){
-      questionPropertiesArr.push(property);
-      let dataValue;
-      if (property === "imageLinks") {
-        dataValue = dataObj[property].split(' ');
-      }
-      else if (property === "tags") {
-        dataValue = dataObj[property].split(',');
-      } else {
-        dataValue = dataObj[property];
-      }
-      questionValuesArr.push(dataValue);
-    }
+    const {questionPropertiesArr, questionValuesArr} = getBodyPropertiesAndValues(dataObj);
 
-    // console.log(questionPropertiesArr);
-    // console.log(questionValuesArr);
     await dbOperations.insertQuestion(questionPropertiesArr, questionValuesArr);
   } catch (err) {
     console.log(err);
@@ -119,18 +103,50 @@ app.post("/admin", async function(req, res) {
   res.redirect(301, "/admin/add-question");
 });
 
-// Update question
 app.get("/admin/update-question", async function(req, res) {
   // bring all the question and display it to the user
   const columns = ["question_id", "title", "explanation"];
-  const questions = await dbOperations.readQuestions(columns);
-  console.log(questions);
-  res.render("updatePageQuestions", {
-    questionsList: questions.rows,
-    categories: categories
-  });
+  try {
+    const questions = await dbOperations.readQuestions(columns);
+    console.log(questions);
+    res.render("updatePageQuestions", {
+      questionsList: questions.rows,
+      categories: categories
+    });
+  } catch (err) {
+    console.log(err); 
+  }
 });
 
+app.get("/admin/update-question/:id", async function(req, res) {
+  const {id} = req.params;
+  let question;
+  try {
+    question = await dbOperations.getAllFieldsSingleQuestion(id);
+  } catch (err) {
+    console.log(err);
+  }
+  res.json(question.rows[0]);
+  // redirect to form update page, since data have been fetched
+  // make a seperate ejs file for it
+});
+
+// Update question
+app.put("/admin/:id", async function(req, res) {
+  const {id} = req.params;
+  try {
+    const dataObj = req.body;
+    const {questionPropertiesArr, questionValuesArr} = getBodyPropertiesAndValues(dataObj, false);
+    console.log(questionPropertiesArr);
+    console.log(questionValuesArr);
+    await dbOperations.updateQuestion(id, questionPropertiesArr, questionValuesArr);
+    console.log('Question Updated Successfully!');
+  } catch (err) {
+    console.log(err);
+  }
+
+  res.redirect(201, '/admin/update-question');
+})
 
 // delete question
 app.delete("/admin/:id", async function(req, res) {
@@ -141,6 +157,8 @@ app.delete("/admin/:id", async function(req, res) {
   } catch (err) {
     console.log(err);
   }
+
+  res.redirect(202, '/admin/update-question');
 })
 
 // page Not found
@@ -161,6 +179,29 @@ async function exitHandler(options, exitCode) {
   if (options.cleanup) console.log('clean');
   if (exitCode || exitCode === 0) console.log(exitCode);
   if (options.exit) process.exit();
+}
+
+function getBodyPropertiesAndValues(dataObj, isSplit = true) {
+  let questionPropertiesArr = [] ,questionValuesArr = [];
+
+  for (const property in dataObj){
+    questionPropertiesArr.push(property);
+    let dataValue;
+    if (isSplit && property === "imageLinks") {
+      dataValue = dataObj[property].split(' ');
+    }
+    else if (isSplit && property === "tags") {
+      dataValue = dataObj[property].split(',');
+    } else {
+      dataValue = dataObj[property];
+    }
+    questionValuesArr.push(dataValue);
+  }
+
+  return {
+    questionPropertiesArr,
+    questionValuesArr
+  }
 }
 
 //do something when app is closing
