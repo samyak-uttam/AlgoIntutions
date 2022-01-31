@@ -62,6 +62,9 @@ app.get("/category/:categoryName", async function(req, res) {
   try {
     let categoryName = req.params.categoryName;
     let questions = await dbOperations.readQuesByTag(["title", "difficulty", "tags", "explanation"], [categoryName]);
+    if (question.rows.length === 0) {
+      res.redirect(301,  '/questionNotFound')
+    }
     res.render("category", {
       categoryName: categoryName,
       questionsList: questions.rows,
@@ -78,7 +81,7 @@ app.get("/question/:questionTitle", async function(req, res) {
   console.log(questionTitle);
   let question = await dbOperations.readSingleQues("*", [questionTitle]);
   if (question.rows.length === 0) {
-    res.redirect(301, '/404')
+    res.redirect(301,  '/questionNotFound')
   }
 
   res.render("question", {
@@ -122,15 +125,17 @@ app.get("/admin/update-question", async function(req, res) {
 
 app.get("/admin/update-question/:id", async function(req, res) {
   const {id} = req.params;
-  let question;
+  let question, imageLinksValue;
   try {
     question = await dbOperations.getAllFieldsSingleQuestion(id);
+    imageLinksValue = question.rows[0].imagelinks.join(' ');
   } catch (err) {
     console.log(err);
   }
   
   res.render("updateQuestionForm", {
     question: question.rows[0],
+    imageLinks: imageLinksValue,
     categories: categories
   });
 });
@@ -163,7 +168,7 @@ app.delete("/admin/:id", async function(req, res) {
 })
 
 // page Not found
-app.get("/404", function(req, res) {
+app.get("/:anyOtherUrl", function(req, res) {
   res.render("pageNotFound", {
     categories: categories
   });
