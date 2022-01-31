@@ -12,7 +12,7 @@
       <div class="topics-tag">
         <% question.tags.forEach(function(topic) { %>
         <span class="topic">
-          <a href="/category/<%= topic %>"><%= topic %></a>
+          <a href="/category/<%=topic%>"><%= topic %></a>
         </span>
         <% }) %>
       </div>
@@ -20,7 +20,9 @@
     <p><%= question.explanation %></p>
     <br>
     <h2>Solution:</h2>
-    <p><%= question.intuition %></p>
+    <% if (question.intuition) { %>
+      <p><%= question.intuition %></p>
+    <% } %>
     <p><%= question.approach %></p>
     <div class="container">
       <nav>

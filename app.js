@@ -122,15 +122,17 @@ app.get("/admin/update-question", async function(req, res) {
 
 app.get("/admin/update-question/:id", async function(req, res) {
   const {id} = req.params;
-  let question;
+  let question, imageLinksValue;
   try {
     question = await dbOperations.getAllFieldsSingleQuestion(id);
+    imageLinksValue = question.rows[0].imagelinks.join(' ');
   } catch (err) {
     console.log(err);
   }
   
   res.render("updateQuestionForm", {
     question: question.rows[0],
+    imageLinks: imageLinksValue,
     categories: categories
   });
 });
