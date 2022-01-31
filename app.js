@@ -77,6 +77,10 @@ app.get("/question/:questionTitle", async function(req, res) {
   let questionTitle = req.params.questionTitle;
   console.log(questionTitle);
   let question = await dbOperations.readSingleQues("*", [questionTitle]);
+  if (question.rows.length === 0) {
+    res.redirect(301, '/404')
+  }
+
   res.render("question", {
     question: question.rows[0],
     categories: categories
@@ -104,11 +108,9 @@ app.post("/admin", async function(req, res) {
 });
 
 app.get("/admin/update-question", async function(req, res) {
-  // bring all the question and display it to the user
   const columns = ["question_id", "title", "explanation"];
   try {
     const questions = await dbOperations.readQuestions(columns);
-    console.log(questions);
     res.render("updatePageQuestions", {
       questionsList: questions.rows,
       categories: categories
@@ -127,7 +129,6 @@ app.get("/admin/update-question/:id", async function(req, res) {
     console.log(err);
   }
   
-  console.log(question.rows[0]);
   res.render("updateQuestionForm", {
     question: question.rows[0],
     categories: categories
@@ -136,8 +137,8 @@ app.get("/admin/update-question/:id", async function(req, res) {
 
 // Update question
 app.put("/admin/:id", async function(req, res) {
-  const {id} = req.params;
   try {
+    const {id} = req.params;
     const dataObj = req.body;
     const {questionPropertiesArr, questionValuesArr} = getBodyPropertiesAndValues(dataObj);
     
@@ -145,25 +146,25 @@ app.put("/admin/:id", async function(req, res) {
   } catch (err) {
     console.log(err);
   }
-
-  res.redirect(201, '/admin/update-question');
+  // Not redirecting properly
+  res.redirect(301, "/admin/update-question");
 })
 
 // delete question
 app.delete("/admin/:id", async function(req, res) {
-  const {id} = req.params;
   try {
+    const {id} = req.params;
     await dbOperations.deleteQuestion(id);
   } catch (err) {
     console.log(err);
   }
-
-  res.redirect(202, '/admin/update-question');
+  // Not redirecting properly
+  res.redirect(301, '/admin/update-question');
 })
 
 // page Not found
 app.get("/404", function(req, res) {
-  res.render("404", {
+  res.render("pageNotFound", {
     categories: categories
   });
 })
@@ -181,16 +182,16 @@ async function exitHandler(options, exitCode) {
   if (options.exit) process.exit();
 }
 
-function getBodyPropertiesAndValues(dataObj, isSplit = true) {
+function getBodyPropertiesAndValues(dataObj) {
   let questionPropertiesArr = [] ,questionValuesArr = [];
 
   for (const property in dataObj){
     questionPropertiesArr.push(property);
     let dataValue;
-    if (isSplit && property === "imageLinks") {
+    if (property === "imageLinks") {
       dataValue = dataObj[property].split(' ');
     }
-    else if (isSplit && property === "tags") {
+    else if (property === "tags") {
       dataValue = dataObj[property].split(',');
     } else {
       dataValue = dataObj[property];

@@ -95,9 +95,10 @@ async function updateQuestion(id, questionPropertiesArr, questionValuesArr) {
     let tempString = questionPropertiesArr[i] +'=$'+ `${i + 1}`;
     questionPropertiesArr[i] = tempString;
   }
-
+  const idStringInject = '$'+`${i + 1}`;
+  
   try {
-    await client.query("UPDATE questions SET "+ questionPropertiesArr +" WHERE question_id = $13", [...questionValuesArr, id]);
+    await client.query("UPDATE questions SET "+ questionPropertiesArr +" WHERE question_id = "+ idStringInject, [...questionValuesArr, id]);
     console.log('Question Updated Successfully!');
   } catch (err) {
     console.log(err);

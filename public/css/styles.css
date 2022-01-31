@@ -57,7 +57,6 @@ body {
 .questions-list-home {
   margin: 0 20%;
   margin-bottom: 1rem;
-  /* height: calc(100vh - 3rem - 3rem - 10rem); */
   min-height: calc(100vh - 3rem - 3rem - 2rem - 1rem - 4rem - 1rem - 1rem);
   display: flex;
   flex-direction: column;
@@ -118,7 +117,7 @@ body {
 footer {
   padding: 10px;
   height: 3rem;
-  background-color: lightsalmon;
+  background-color: #D3DEDC;
   text-align: center;
   margin-top: auto;
   width: 100%;
