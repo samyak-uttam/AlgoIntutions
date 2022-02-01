@@ -6,16 +6,26 @@
 }
 
 body {
-  background-color: #EEEEEE;
+  background-color: #EEEEFE;
+}
+
+a {
+  text-decoration: none;
+}
+
+.middle-section {
+  margin: 1rem 20%;
   display: flex;
   flex-direction: column;
+  font-size: 1.1rem;
+  min-height: 84vh;
 }
 
 /* Navbar */
 .navbar {
   padding: 2px;
-  margin-bottom: 1rem;
   height: 4rem;
+  box-shadow: 0px 0px 8px 3px #CCCCCC;
 }
 
 .navbar-brand {
@@ -30,48 +40,33 @@ body {
 
 /* Questions tag list container */
 .topics-tag-list {
-  height: 3rem;
-  margin: 0 auto;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin: 1.5rem auto;
 }
 
 .topics-list-card {
   display: flex;
+  margin: 0 auto;
 }
 
 .topic-tag {
   background-color: white;
-  border-collapse: separate;
-  border-radius: 8px;
+  border-radius: 10px;
   margin-right: 10px;
   padding: 10px;
 }
 
 .topic-title {
+  color: #666;
   font-size: 1.2rem;
-  text-decoration: none;
 }
 
 /* default question card list sytling */
-.questions-list-home {
-  margin: 0 20%;
+.questions-list {
   margin-bottom: 1rem;
-  min-height: calc(100vh - 3rem - 3rem - 2rem - 1rem - 4rem - 1rem - 1rem);
-  display: flex;
-  flex-direction: column;
-}
-
-.questions-list-category {
-  margin: 0 20%;
-  margin-bottom: 1rem;
-  min-height: calc(100vh - 3rem - 0.5rem - 4rem - 1rem - 48px - 1rem);
-  display: flex;
-  flex-direction: column;
 }
 
 .questions-card {
-  width: 100%;
+  border-radius: 10px;
   margin: 5px auto;
   background-color: #fff;
 }
@@ -80,9 +75,9 @@ body {
   margin: 0.5rem;
 }
 .question-title-text > a {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: bold;
   color: #444;
-  text-decoration: none;
 }
 
 .question-info {
@@ -92,35 +87,39 @@ body {
 }
 
 .difficulty-tag > a {
-  font-size: 1.2rem;
-  color: rgb(38, 36, 36);
+  color: white;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  padding: 4px;
   margin-right: 2rem;
-  text-decoration: none;
 }
+
 .topics-tag {
   gap: 0.5rem;
   display: flex;
 }
+
+.topic > a {
+  color: #aaa;
+}
+
+.topic > a:hover {
+  color: #222;
+}
+
 .topic {
   display: flex;
   align-items: center;
-  font-size: 0.9rem;
-}
-.topic > a {
-  text-decoration: none;
-}
-.question-description {
-  width: 100%;
+  font-size: 1rem;
 }
 
 /* Footer */
 footer {
   padding: 10px;
-  height: 3rem;
-  background-color: #D3DEDC;
   text-align: center;
-  margin-top: auto;
+  position: absolute;
   width: 100%;
+  height: 3rem;
 }
 
 /* createQuestion */
@@ -129,7 +128,7 @@ footer {
 }
 
 form {
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -156,12 +155,7 @@ textarea {
 }
 
 /* question page */
-.question-card {
-  margin: 0 20%;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  min-height: calc(100vh - 3rem - 4rem - 1rem - 1rem);
-}
+
 
 .heading-center {
   min-height: calc(100vh - 4rem - 1rem - 3rem);
@@ -169,6 +163,12 @@ textarea {
   flex-direction: column;
   justify-content: center;
   align-items: center; 
+}
+
+.heading-center > img {
+  width: 10rem;
+  height: 10rem;
+  margin-right: 1rem;
 }
 
 .heading-center > img {

@@ -2,10 +2,10 @@
 
 <div class="question-card card">
   <div class="card-body">
-    <h1><%= question.title %></h1>
+    <h2><%= question.title %></h2>
     <div class="question-info">
       <div class="difficulty-tag">
-        <a href="/tag/<%= question.difficulty %>">
+        <a href="/tag/<%= question.difficulty %>" style="background-color: <%= backgroundColor %>;">
           <%= question.difficulty %>
         </a>
       </div>
