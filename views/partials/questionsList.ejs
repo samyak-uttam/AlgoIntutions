@@ -1,22 +1,22 @@
-<% questionsList.forEach(function(question) { %>
+<% for(let i = 0; i < questionsList.length; i++) { %>
   <div class="questions-card card">
     <div class="card-body">
       <div class="question-title">
         <h4 class="question-title-text">
-          <a href="/question/<%= question.title %>">
-            <%= question.title %>
+          <a href="/question/<%= questionsList[i].title %>">
+            <%= questionsList[i].title %>
           </a>
         </h4>
       </div>
 
       <div class="question-info">
         <div class="difficulty-tag">
-          <a href="/tag/<%= question.difficulty %>">
-            <%= question.difficulty %>
+          <a href="/tag/<%= questionsList[i].difficulty %>" style="background-color: <%= backgroundColors[i] %>;">
+            <%= questionsList[i].difficulty %>
           </a>
         </div>
         <div class="topics-tag">
-          <% question.tags.forEach(function(topic) { %>
+          <% questionsList[i].tags.forEach(function(topic) { %>
           <span class="topic">
             <a href="/category/<%= topic %>"><%= topic %></a>
           </span>
@@ -25,8 +25,8 @@
       </div>
 
       <div class="question-description">
-        <%= question.explanation %>
+        <%= questionsList[i].explanation %>
       </div>
     </div>
   </div>
-<% }); %>
+<% } %>

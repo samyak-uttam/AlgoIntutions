@@ -14,9 +14,12 @@ dbOperations.clientConnect();
 
 // category Names
 const categories = ["Array", "Binary Tree", "Dynamic Programming", "Graph", "Greedy", "Queue", "Stack", "String"];
-const difficulties = ["Easy", "Medium", "Hard"]
-
-// ROUTES //
+const difficulties = ["Easy", "Medium", "Hard"];
+const diffColors = {
+  "Easy": "#5cb85b",
+  "Medium": "#ffa116",
+  "Hard": "#d9534e"
+};
 
 app.use(function(req, res, next) {
   if (req.query._method == 'DELETE') {
@@ -25,17 +28,20 @@ app.use(function(req, res, next) {
   } else if (req.query._method == 'PUT') {
     req.method = 'PUT';
     req.url = req.path;
-  }      
-  next(); 
+  }
+  next();
 });
 
+
+// GET ROUTES
 // get All the questions
 app.get("/", async function(req, res) {
   try {
     let questions = await dbOperations.readQuestions(["title", "difficulty", "tags", "explanation"]);
     res.render("home", {
       questionsList: questions.rows,
-      categories: categories
+      categories: categories,
+      backgroundColors: getBackgroundColors(questions.rows)
     });
   } catch (err) {
     console.log(err);
@@ -50,7 +56,8 @@ app.get("/tag/:difficulty", async function(req, res) {
     res.render("category", {
       categoryName: difficulty,
       questionsList: questions.rows,
-      categories: categories
+      categories: categories,
+      backgroundColors: getBackgroundColors(questions.rows)
     });
   } catch (err) {
     console.log(err);
@@ -62,13 +69,14 @@ app.get("/category/:categoryName", async function(req, res) {
   try {
     let categoryName = req.params.categoryName;
     let questions = await dbOperations.readQuesByTag(["title", "difficulty", "tags", "explanation"], [categoryName]);
-    if (question.rows.length === 0) {
+    if (questions.rows.length === 0) {
       res.redirect(301,  '/questionNotFound')
     }
     res.render("category", {
       categoryName: categoryName,
       questionsList: questions.rows,
-      categories: categories
+      categories: categories,
+      backgroundColors: getBackgroundColors(questions.rows)
     });
   } catch (err) {
     console.log(err);
@@ -86,7 +94,8 @@ app.get("/question/:questionTitle", async function(req, res) {
 
   res.render("question", {
     question: question.rows[0],
-    categories: categories
+    categories: categories,
+    backgroundColor: diffColors[question.rows[0].difficulty]
   });
 });
 
@@ -98,6 +107,47 @@ app.get("/admin/add-question", function(req, res) {
   });
 });
 
+// Update questions page
+app.get("/admin/update-question", async function(req, res) {
+  const columns = ["question_id", "title", "explanation"];
+  try {
+    const questions = await dbOperations.readQuestions(columns);
+    res.render("updatePageQuestions", {
+      questionsList: questions.rows,
+      categories: categories
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Update a single question
+app.get("/admin/update-question/:id", async function(req, res) {
+  const {id} = req.params;
+  let question, imageLinksValue;
+  try {
+    question = await dbOperations.getAllFieldsSingleQuestion(id);
+    imageLinksValue = question.rows[0].imagelinks.join(' ');
+  } catch (err) {
+    console.log(err);
+  }
+
+  res.render("updateQuestionForm", {
+    question: question.rows[0],
+    imageLinks: imageLinksValue,
+    categories: categories
+  });
+});
+
+// page Not found
+app.get("/:anyOtherUrl", function(req, res) {
+  res.render("pageNotFound", {
+    categories: categories
+  });
+});
+
+
+// POST ROUTES
 app.post("/admin", async function(req, res) {
   try {
     const dataObj = req.body;
@@ -110,51 +160,25 @@ app.post("/admin", async function(req, res) {
   res.redirect(301, "/admin/add-question");
 });
 
-app.get("/admin/update-question", async function(req, res) {
-  const columns = ["question_id", "title", "explanation"];
-  try {
-    const questions = await dbOperations.readQuestions(columns);
-    res.render("updatePageQuestions", {
-      questionsList: questions.rows,
-      categories: categories
-    });
-  } catch (err) {
-    console.log(err); 
-  }
-});
 
-app.get("/admin/update-question/:id", async function(req, res) {
-  const {id} = req.params;
-  let question, imageLinksValue;
-  try {
-    question = await dbOperations.getAllFieldsSingleQuestion(id);
-    imageLinksValue = question.rows[0].imagelinks.join(' ');
-  } catch (err) {
-    console.log(err);
-  }
-  
-  res.render("updateQuestionForm", {
-    question: question.rows[0],
-    imageLinks: imageLinksValue,
-    categories: categories
-  });
-});
-
+// PUT ROUTES
 // Update question
 app.put("/admin/:id", async function(req, res) {
   try {
     const {id} = req.params;
     const dataObj = req.body;
     const {questionPropertiesArr, questionValuesArr} = getBodyPropertiesAndValues(dataObj);
-    
+
     await dbOperations.updateQuestion(id, questionPropertiesArr, questionValuesArr);
   } catch (err) {
     console.log(err);
   }
   // Not redirecting properly
   res.redirect(301, "/admin/update-question");
-})
+});
 
+
+// DELETE ROUTES
 // delete question
 app.delete("/admin/:id", async function(req, res) {
   try {
@@ -165,26 +189,20 @@ app.delete("/admin/:id", async function(req, res) {
   }
   // Not redirecting properly
   res.redirect(301, '/admin/update-question');
-})
-
-// page Not found
-app.get("/:anyOtherUrl", function(req, res) {
-  res.render("pageNotFound", {
-    categories: categories
-  });
-})
+});
 
 const server = app.listen(3000, function() {
   console.log("Server started on port 3000");
 });
 
-process.stdin.resume(); //so the program will not close instantly
 
-async function exitHandler(options, exitCode) {
-  await dbOperations.clientDisConnect();
-  if (options.cleanup) console.log('clean');
-  if (exitCode || exitCode === 0) console.log(exitCode);
-  if (options.exit) process.exit();
+// Util functions
+function getBackgroundColors(questions) {
+  let backColors = [];
+  questions.forEach(function(question) {
+    backColors.push(diffColors[question.difficulty]);
+  });
+  return backColors;
 }
 
 function getBodyPropertiesAndValues(dataObj) {
@@ -208,6 +226,15 @@ function getBodyPropertiesAndValues(dataObj) {
     questionPropertiesArr,
     questionValuesArr
   }
+}
+
+process.stdin.resume(); //so the program will not close instantly
+
+async function exitHandler(options, exitCode) {
+  await dbOperations.clientDisConnect();
+  if (options.cleanup) console.log('clean');
+  if (exitCode || exitCode === 0) console.log(exitCode);
+  if (options.exit) process.exit();
 }
 
 //do something when app is closing
