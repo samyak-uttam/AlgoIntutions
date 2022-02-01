@@ -69,7 +69,7 @@ app.get("/category/:categoryName", async function(req, res) {
   try {
     let categoryName = req.params.categoryName;
     let questions = await dbOperations.readQuesByTag(["title", "difficulty", "tags", "explanation"], [categoryName]);
-    if (questions.rows.length === 0) {
+    if (question.rows.length === 0) {
       res.redirect(301,  '/questionNotFound')
     }
     res.render("category", {
@@ -160,6 +160,35 @@ app.post("/admin", async function(req, res) {
   res.redirect(301, "/admin/add-question");
 });
 
+app.get("/admin/update-question", async function(req, res) {
+  const columns = ["question_id", "title", "explanation"];
+  try {
+    const questions = await dbOperations.readQuestions(columns);
+    res.render("updatePageQuestions", {
+      questionsList: questions.rows,
+      categories: categories
+    });
+  } catch (err) {
+    console.log(err); 
+  }
+});
+
+app.get("/admin/update-question/:id", async function(req, res) {
+  const {id} = req.params;
+  let question, imageLinksValue;
+  try {
+    question = await dbOperations.getAllFieldsSingleQuestion(id);
+    imageLinksValue = question.rows[0].imagelinks.join(' ');
+  } catch (err) {
+    console.log(err);
+  }
+  
+  res.render("updateQuestionForm", {
+    question: question.rows[0],
+    imageLinks: imageLinksValue,
+    categories: categories
+  });
+});
 
 // PUT ROUTES
 // Update question
@@ -189,7 +218,14 @@ app.delete("/admin/:id", async function(req, res) {
   }
   // Not redirecting properly
   res.redirect(301, '/admin/update-question');
-});
+})
+
+// page Not found
+app.get("/:anyOtherUrl", function(req, res) {
+  res.render("pageNotFound", {
+    categories: categories
+  });
+})
 
 const server = app.listen(3000, function() {
   console.log("Server started on port 3000");
