@@ -24,6 +24,13 @@
       <p><%= question.intuition %></p>
     <% } %>
     <p><%= question.approach %></p>
+    <% if (question.imagelinks.length) { %>
+      <div class="question-image-cont">
+        <% for (let i = 0; i < question.imagelinks.length; i++) { %>
+          <img class="question-approach-image" src="<%= question.imagelinks[i]%>" alt="<%=question.title%> image">
+        <% } %>
+      </div>
+    <% } %>
     <div class="container">
       <nav>
         <div class="nav nav-tabs" id="nav-tab">

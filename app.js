@@ -69,15 +69,16 @@ app.get("/category/:categoryName", async function(req, res) {
   try {
     let categoryName = req.params.categoryName;
     let questions = await dbOperations.readQuesByTag(["title", "difficulty", "tags", "explanation"], [categoryName]);
-    if (question.rows.length === 0) {
-      res.redirect(301,  '/questionNotFound')
+    if (questions.rows.length === 0) {
+      res.redirect(301, '/questionNotFound')
+    } else {
+      res.render("category", {
+        categoryName: categoryName,
+        questionsList: questions.rows,
+        categories: categories,
+        backgroundColors: getBackgroundColors(questions.rows)
+      });
     }
-    res.render("category", {
-      categoryName: categoryName,
-      questionsList: questions.rows,
-      categories: categories,
-      backgroundColors: getBackgroundColors(questions.rows)
-    });
   } catch (err) {
     console.log(err);
   }
@@ -85,18 +86,22 @@ app.get("/category/:categoryName", async function(req, res) {
 
 // Get single question
 app.get("/question/:questionTitle", async function(req, res) {
-  let questionTitle = req.params.questionTitle;
-  console.log(questionTitle);
-  let question = await dbOperations.readSingleQues("*", [questionTitle]);
-  if (question.rows.length === 0) {
-    res.redirect(301,  '/questionNotFound')
+  try {
+    let questionTitle = req.params.questionTitle;
+    console.log(questionTitle);
+    let question = await dbOperations.readSingleQues("*", [questionTitle]);
+    if (question.rows.length === 0) {
+      res.redirect(301,  '/questionNotFound')
+    } else {
+      res.render("question", {
+        question: question.rows[0],
+        categories: categories,
+        backgroundColor: diffColors[question.rows[0].difficulty]
+      });
+    }
+  } catch (err) {
+    console.log(err);
   }
-
-  res.render("question", {
-    question: question.rows[0],
-    categories: categories,
-    backgroundColor: diffColors[question.rows[0].difficulty]
-  });
 });
 
 // Create a question
