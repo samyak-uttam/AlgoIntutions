@@ -1,11 +1,12 @@
 const {Client} = require('pg');
+const dotenv = require("dotenv");
+dotenv.config();
+
 const client = new Client({
-  // comment my credentials for development :)
-  user: "admin64",
-  host: "localhost",
-  password: "751101@admin",
-  port: 5432,
-  database: "algointutions"
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 async function clientConnect() {

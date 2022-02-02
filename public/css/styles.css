@@ -155,6 +155,17 @@ textarea {
 }
 
 /* question page */
+.question-approach-image {
+  height: 40%;
+  width: 40%;
+}
+
+.question-image-cont {
+  display: inline-block;
+  gap: 2rem;
+  align-items: center;
+  margin: 10px auto;
+}
 
 
 .heading-center {
@@ -162,7 +173,7 @@ textarea {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
 }
 
 .heading-center > img {
@@ -186,16 +197,4 @@ textarea {
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
   margin-right: 0.5rem;
-}
-
-.question-approach-image {
-  height: 30rem;
-  width: 30rem;
-}
-
-.question-image-cont {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  align-items: center;
 }

@@ -88,7 +88,6 @@ app.get("/category/:categoryName", async function(req, res) {
 app.get("/question/:questionTitle", async function(req, res) {
   try {
     let questionTitle = req.params.questionTitle;
-    console.log(questionTitle);
     let question = await dbOperations.readSingleQues("*", [questionTitle]);
     if (question.rows.length === 0) {
       res.redirect(301,  '/questionNotFound')
@@ -174,7 +173,7 @@ app.get("/admin/update-question", async function(req, res) {
       categories: categories
     });
   } catch (err) {
-    console.log(err); 
+    console.log(err);
   }
 });
 
@@ -187,7 +186,7 @@ app.get("/admin/update-question/:id", async function(req, res) {
   } catch (err) {
     console.log(err);
   }
-  
+
   res.render("updateQuestionForm", {
     question: question.rows[0],
     imageLinks: imageLinksValue,

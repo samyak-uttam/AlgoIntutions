@@ -24,7 +24,7 @@
       <p><%= question.intuition %></p>
     <% } %>
     <p><%= question.approach %></p>
-    <% if (question.imagelinks.length) { %>
+    <% if (question.imagelinks[0] != "") { %>
       <div class="question-image-cont">
         <% for (let i = 0; i < question.imagelinks.length; i++) { %>
           <img class="question-approach-image" src="<%= question.imagelinks[i]%>" alt="<%=question.title%> image">
