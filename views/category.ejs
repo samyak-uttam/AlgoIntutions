@@ -1,10 +1,12 @@
 <%- include("partials/header"); -%>
-<div class="heading">
-  <h1><%= categoryName %></h1>
-</div>
+  <div class="heading">
+    <h1>
+      <%= categoryName %>
+    </h1>
+  </div>
 
-<div class="questions-list">
-  <%- include("partials/questionsList"); -%>
-</div>
-
-<%- include("partials/footer"); -%>
+  <div class="questions-list">
+    <%- include("partials/questionsList"); -%>
+  </div>
+  <%- include("partials/pagination"); -%>
+    <%- include("partials/footer"); -%>

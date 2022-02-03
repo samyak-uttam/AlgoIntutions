@@ -43,63 +43,67 @@ app.use(function (req, res, next) {
 
 // GET ROUTES
 // get All the questions
+function getPaginationDataObject(req, total) {
+  let reqQuery = { ...req.query };
+
+  const removeFields = ['page', 'limit'];
+
+  removeFields.forEach((param) => delete reqQuery[param]);
+
+  let questions;
+
+  // pagination
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 1;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  // Pagination result
+  const pagination = {};
+
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit,
+    };
+  }
+
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit,
+    };
+  }
+  return {
+    page,
+    limit,
+    startIndex,
+    endIndex,
+    pagination,
+  };
+}
+
 app.get('/', async function (req, res) {
   try {
-    console.log(req.query);
-
-    let reqQuery = { ...req.query };
-
-    const removeFields = ['page', 'limit'];
-
-    removeFields.forEach((param) => delete reqQuery[param]);
-
-    let questions;
-
-    // pagination
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 1;
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
     let total = await dbOperations.getAllQuestionsCount();
     total = total.rows[0].count;
 
-    questions = await dbOperations.readQuestionsOfPage(
+    const { pagination, startIndex, limit, page } = getPaginationDataObject(
+      req,
+      total
+    );
+
+    questions = await dbOperations.readQuestionsOfHomePage(
       ['title', 'difficulty', 'tags', 'explanation'],
       [limit, startIndex]
     );
-
-    // Pagination result
-    const pagination = {};
-
-    if (endIndex < total) {
-      pagination.next = {
-        page: page + 1,
-        limit,
-      };
-    }
-
-    if (startIndex > 0) {
-      pagination.prev = {
-        page: page - 1,
-        limit,
-      };
-    }
-
-    // For testing
-    // res.status(200).json({
-    //   success: true,
-    //   count: questions.rows.length,
-    //   currentPage: page,
-    //   categories,
-    //   pagination,
-    //   data: questions.rows,
-    // });
 
     res.render('home', {
       questionsList: questions.rows,
       count: questions.rows.length,
       categories: categories,
       pagination,
+      path: req.path,
       currentPage: page,
       totalPages: total / limit,
       backgroundColors: getBackgroundColors(questions.rows),
@@ -113,14 +117,30 @@ app.get('/', async function (req, res) {
 app.get('/tag/:difficulty', async function (req, res) {
   try {
     let difficulty = req.params.difficulty;
+    let total = await dbOperations.readQuestionByDifficultyTotalCount(
+      difficulty
+    );
+    total = total.rows[0].count;
+
+    const { pagination, startIndex, limit, page } = getPaginationDataObject(
+      req,
+      total
+    );
+
     let questions = await dbOperations.readQuesByDifficulty(
       ['title', 'difficulty', 'tags', 'explanation'],
-      [difficulty]
+      difficulty,
+      [limit, startIndex]
     );
+
     res.render('category', {
       categoryName: difficulty,
       questionsList: questions.rows,
       categories: categories,
+      pagination,
+      path: req.path,
+      currentPage: page,
+      totalPages: total / limit,
       backgroundColors: getBackgroundColors(questions.rows),
     });
   } catch (err) {

@@ -71,7 +71,7 @@ async function readQuestions(columns) {
   }
 }
 
-async function readQuestionsOfPage(columns, paginationArr) {
+async function readQuestionsOfHomePage(columns, paginationArr) {
   try {
     let questions = await client.query(
       'SELECT ' + columns + ' FROM questions LIMIT $1 OFFSET $2',
@@ -95,11 +95,25 @@ async function readQuesByTag(columns, tag) {
   }
 }
 
-async function readQuesByDifficulty(columns, difficulty) {
+async function readQuestionByDifficultyTotalCount(difficulty) {
+  try {
+    const questionCount = await client.query(
+      'SELECT COUNT(question_id) FROM questions WHERE difficulty = $1',
+      [difficulty]
+    );
+    return questionCount;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function readQuesByDifficulty(columns, difficulty, paginationArr) {
   try {
     const questions = await client.query(
-      'SELECT ' + columns + ' from questions where difficulty = ($1)',
-      difficulty
+      'SELECT ' +
+        columns +
+        ' FROM questions WHERE difficulty = $1 LIMIT $2 OFFSET $3',
+      [difficulty, ...paginationArr]
     );
     return questions;
   } catch (err) {
@@ -170,8 +184,9 @@ module.exports = {
   getAllQuestionsCount,
   readSingleQues,
   readQuestions,
+  readQuestionByDifficultyTotalCount,
   readQuesByDifficulty,
-  readQuestionsOfPage,
+  readQuestionsOfHomePage,
   readQuesByTag,
   insertQuestion,
   deleteQuestion,
