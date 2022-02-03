@@ -41,6 +41,7 @@ a {
 /* Questions tag list container */
 .topics-tag-list {
   margin: 1.5rem auto;
+  /* height: 5rem; */
 }
 
 .topics-list-card {
@@ -63,6 +64,7 @@ a {
 /* default question card list sytling */
 .questions-list {
   margin-bottom: 1rem;
+  min-height: calc(100vh - 18rem);
 }
 
 .questions-card {
@@ -150,12 +152,9 @@ textarea {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-
-  /* resize: none;   text area resize option disabled */
 }
 
 /* question page */
-
 
 .heading-center {
   min-height: calc(100vh - 4rem - 1rem - 3rem);
@@ -198,4 +197,9 @@ textarea {
   flex-direction: column;
   gap: 2rem;
   align-items: center;
+}
+
+.pagination-cont {
+  display: flex;
+  justify-content: center;
 }

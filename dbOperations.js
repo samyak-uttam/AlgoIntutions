@@ -1,26 +1,45 @@
-const {Client} = require('pg');
+const { Client } = require('pg');
 const client = new Client({
   // comment my credentials for development :)
-  user: "admin64",
-  host: "localhost",
-  password: "751101@admin",
+  user: 'admin64',
+  host: 'localhost',
+  password: '751101@admin',
   port: 5432,
-  database: "algointutions"
+  database: 'algointutions',
 });
+
+// const connectionURI =
+//   'postgres://kqwluxvalkpjmy:d4d41d0309880d0d53fcc9dd41924a7aec37a05fb7807b773372407e70f9f19d@ec2-44-193-188-118.compute-1.amazonaws.com:5432/d1cs01s309dtqn';
+
+// const client = new Client({
+//   connectionString: connectionURI,
+//   ssl: {
+//     rejectUnauthorized: false,
+//   },
+// });
 
 async function clientConnect() {
   try {
     await client.connect();
-    console.log("Client connected successfully.");
+    console.log('Client connected successfully.');
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 }
 
 async function clientDisConnect() {
   try {
     await client.end();
-    console.log("Client disconnected successfully.");
+    console.log('Client disconnected successfully.');
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function getAllQuestionsCount() {
+  try {
+    const questionsTableLength = await client.query('SELECT COUNT(question_id) FROM questions');
+    return questionsTableLength;
   } catch (err) {
     console.log(err);
   }
@@ -28,7 +47,10 @@ async function clientDisConnect() {
 
 async function readSingleQues(columns, title) {
   try {
-    const question = await client.query("SELECT " + columns + " from questions where title = ($1)", title);
+    const question = await client.query(
+      'SELECT ' + columns + ' from questions where title = ($1)',
+      title
+    );
     return question;
   } catch (err) {
     console.log(err);
@@ -37,8 +59,19 @@ async function readSingleQues(columns, title) {
 
 async function readQuestions(columns) {
   try {
-    const allQuestions = await client.query("SELECT " + columns + " from questions");
+    const allQuestions = await client.query(
+      'SELECT ' + columns + ' from questions'
+    );
     return allQuestions;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function readQuestionsOfPage(columns, paginationArr) {
+  try {
+    let questions = await client.query('SELECT ' + columns + ' FROM questions LIMIT $1 OFFSET $2', paginationArr);
+    return questions;
   } catch (err) {
     console.log(err);
   }
@@ -46,7 +79,10 @@ async function readQuestions(columns) {
 
 async function readQuesByTag(columns, tag) {
   try {
-    const taggedQuestions = await client.query("SELECT " + columns + " from questions where ($1) = ANY(tags)", tag);
+    const taggedQuestions = await client.query(
+      'SELECT ' + columns + ' from questions where ($1) = ANY(tags)',
+      tag
+    );
     return taggedQuestions;
   } catch (err) {
     console.log(err);
@@ -55,7 +91,10 @@ async function readQuesByTag(columns, tag) {
 
 async function readQuesByDifficulty(columns, difficulty) {
   try {
-    const questions = await client.query("SELECT " + columns + " from questions where difficulty = ($1)", difficulty);
+    const questions = await client.query(
+      'SELECT ' + columns + ' from questions where difficulty = ($1)',
+      difficulty
+    );
     return questions;
   } catch (err) {
     console.log(err);
@@ -64,7 +103,12 @@ async function readQuesByDifficulty(columns, difficulty) {
 
 async function insertQuestion(questionPropertiesArr, questionValuesArr) {
   try {
-    await client.query("INSERT INTO questions ("+ questionPropertiesArr +") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)", questionValuesArr);
+    await client.query(
+      'INSERT INTO questions (' +
+        questionPropertiesArr +
+        ') VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
+      questionValuesArr
+    );
     console.log('Question inserted successfully!');
   } catch (err) {
     console.log(err);
@@ -73,7 +117,7 @@ async function insertQuestion(questionPropertiesArr, questionValuesArr) {
 
 async function deleteQuestion(id) {
   try {
-    await client.query("DELETE FROM questions WHERE question_id = $1", [id]);
+    await client.query('DELETE FROM questions WHERE question_id = $1', [id]);
     console.log('Question deleted successfully!');
   } catch (err) {
     console.log(err);
@@ -82,7 +126,10 @@ async function deleteQuestion(id) {
 
 async function getAllFieldsSingleQuestion(id) {
   try {
-    const questionDetails = await client.query("SELECT * FROM questions WHERE question_id = $1", [id]);
+    const questionDetails = await client.query(
+      'SELECT * FROM questions WHERE question_id = $1',
+      [id]
+    );
     return questionDetails;
   } catch (err) {
     console.log(err);
@@ -92,13 +139,19 @@ async function getAllFieldsSingleQuestion(id) {
 async function updateQuestion(id, questionPropertiesArr, questionValuesArr) {
   let i = 0;
   for (; i < questionPropertiesArr.length; i++) {
-    let tempString = questionPropertiesArr[i] +'=$'+ `${i + 1}`;
+    let tempString = questionPropertiesArr[i] + '=$' + `${i + 1}`;
     questionPropertiesArr[i] = tempString;
   }
-  const idStringInject = '$'+`${i + 1}`;
+  const idStringInject = '$' + `${i + 1}`;
 
   try {
-    await client.query("UPDATE questions SET "+ questionPropertiesArr +" WHERE question_id = "+ idStringInject, [...questionValuesArr, id]);
+    await client.query(
+      'UPDATE questions SET ' +
+        questionPropertiesArr +
+        ' WHERE question_id = ' +
+        idStringInject,
+      [...questionValuesArr, id]
+    );
     console.log('Question Updated Successfully!');
   } catch (err) {
     console.log(err);
@@ -108,12 +161,14 @@ async function updateQuestion(id, questionPropertiesArr, questionValuesArr) {
 module.exports = {
   clientConnect,
   clientDisConnect,
+  getAllQuestionsCount,
   readSingleQues,
   readQuestions,
   readQuesByDifficulty,
+  readQuestionsOfPage,
   readQuesByTag,
   insertQuestion,
   deleteQuestion,
   getAllFieldsSingleQuestion,
-  updateQuestion
-}
+  updateQuestion,
+};
