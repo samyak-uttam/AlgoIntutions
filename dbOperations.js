@@ -83,11 +83,25 @@ async function readQuestionsOfHomePage(columns, paginationArr) {
   }
 }
 
-async function readQuesByTag(columns, tag) {
+async function readQuesByTagTotalCount(tag) {
   try {
     const taggedQuestions = await client.query(
-      'SELECT ' + columns + ' from questions where ($1) = ANY(tags)',
-      tag
+      'SELECT COUNT(question_id) FROM questions WHERE ($1) = ANY(tags)',
+      [tag]
+    );
+    return taggedQuestions;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function readQuesByTag(columns, tag, paginationArr) {
+  try {
+    const taggedQuestions = await client.query(
+      'SELECT ' +
+        columns +
+        ' from questions where ($1) = ANY(tags) LIMIT $2 OFFSET $3',
+      [tag, ...paginationArr]
     );
     return taggedQuestions;
   } catch (err) {
@@ -187,6 +201,7 @@ module.exports = {
   readQuestionByDifficultyTotalCount,
   readQuesByDifficulty,
   readQuestionsOfHomePage,
+  readQuesByTagTotalCount,
   readQuesByTag,
   insertQuestion,
   deleteQuestion,

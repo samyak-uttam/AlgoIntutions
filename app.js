@@ -152,20 +152,35 @@ app.get('/tag/:difficulty', async function (req, res) {
 app.get('/category/:categoryName', async function (req, res) {
   try {
     let categoryName = req.params.categoryName;
+    console.log(categoryName);
+    let total = await dbOperations.readQuesByTagTotalCount(categoryName);
+    if (total === undefined) {
+      return res.redirect(301, '/questionNotFound');
+    }
+    total = total.rows[0].count;
+    console.log(total);
+
+    const { pagination, startIndex, limit, page } = getPaginationDataObject(
+      req,
+      total
+    );
+
     let questions = await dbOperations.readQuesByTag(
       ['title', 'difficulty', 'tags', 'explanation'],
-      [categoryName]
+      categoryName,
+      [limit, startIndex]
     );
-    if (questions.rows.length === 0) {
-      res.redirect(301, '/questionNotFound');
-    } else {
-      res.render('category', {
-        categoryName: categoryName,
-        questionsList: questions.rows,
-        categories: categories,
-        backgroundColors: getBackgroundColors(questions.rows),
-      });
-    }
+
+    res.render('category', {
+      categoryName: categoryName,
+      questionsList: questions.rows,
+      categories: categories,
+      pagination,
+      path: req.path,
+      currentPage: page,
+      totalPages: total / limit,
+      backgroundColors: getBackgroundColors(questions.rows),
+    });
   } catch (err) {
     console.log(err);
   }
