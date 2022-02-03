@@ -1,27 +1,27 @@
-const {Client} = require('pg');
-const dotenv = require("dotenv");
+const { Client } = require('pg');
+const dotenv = require('dotenv');
 dotenv.config();
 
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 async function clientConnect() {
   try {
     await client.connect();
-    console.log("Client connected successfully.");
+    console.log('Client connected successfully.');
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 }
 
 async function clientDisConnect() {
   try {
     await client.end();
-    console.log("Client disconnected successfully.");
+    console.log('Client disconnected successfully.');
   } catch (err) {
     console.log(err);
   }
@@ -29,7 +29,10 @@ async function clientDisConnect() {
 
 async function readSingleQues(columns, title) {
   try {
-    const question = await client.query("SELECT " + columns + " from questions where title = ($1)", title);
+    const question = await client.query(
+      'SELECT ' + columns + ' from questions where title = ($1)',
+      title
+    );
     return question;
   } catch (err) {
     console.log(err);
@@ -38,7 +41,9 @@ async function readSingleQues(columns, title) {
 
 async function readQuestions(columns) {
   try {
-    const allQuestions = await client.query("SELECT " + columns + " from questions");
+    const allQuestions = await client.query(
+      'SELECT ' + columns + ' from questions'
+    );
     return allQuestions;
   } catch (err) {
     console.log(err);
@@ -47,7 +52,10 @@ async function readQuestions(columns) {
 
 async function readQuesByTag(columns, tag) {
   try {
-    const taggedQuestions = await client.query("SELECT " + columns + " from questions where ($1) = ANY(tags)", tag);
+    const taggedQuestions = await client.query(
+      'SELECT ' + columns + ' from questions where ($1) = ANY(tags)',
+      tag
+    );
     return taggedQuestions;
   } catch (err) {
     console.log(err);
@@ -56,7 +64,10 @@ async function readQuesByTag(columns, tag) {
 
 async function readQuesByDifficulty(columns, difficulty) {
   try {
-    const questions = await client.query("SELECT " + columns + " from questions where difficulty = ($1)", difficulty);
+    const questions = await client.query(
+      'SELECT ' + columns + ' from questions where difficulty = ($1)',
+      difficulty
+    );
     return questions;
   } catch (err) {
     console.log(err);
@@ -65,7 +76,12 @@ async function readQuesByDifficulty(columns, difficulty) {
 
 async function insertQuestion(questionPropertiesArr, questionValuesArr) {
   try {
-    await client.query("INSERT INTO questions ("+ questionPropertiesArr +") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)", questionValuesArr);
+    await client.query(
+      'INSERT INTO questions (' +
+        questionPropertiesArr +
+        ') VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
+      questionValuesArr
+    );
     console.log('Question inserted successfully!');
   } catch (err) {
     console.log(err);
@@ -74,7 +90,7 @@ async function insertQuestion(questionPropertiesArr, questionValuesArr) {
 
 async function deleteQuestion(id) {
   try {
-    await client.query("DELETE FROM questions WHERE question_id = $1", [id]);
+    await client.query('DELETE FROM questions WHERE question_id = $1', [id]);
     console.log('Question deleted successfully!');
   } catch (err) {
     console.log(err);
@@ -83,7 +99,10 @@ async function deleteQuestion(id) {
 
 async function getAllFieldsSingleQuestion(id) {
   try {
-    const questionDetails = await client.query("SELECT * FROM questions WHERE question_id = $1", [id]);
+    const questionDetails = await client.query(
+      'SELECT * FROM questions WHERE question_id = $1',
+      [id]
+    );
     return questionDetails;
   } catch (err) {
     console.log(err);
@@ -93,13 +112,19 @@ async function getAllFieldsSingleQuestion(id) {
 async function updateQuestion(id, questionPropertiesArr, questionValuesArr) {
   let i = 0;
   for (; i < questionPropertiesArr.length; i++) {
-    let tempString = questionPropertiesArr[i] +'=$'+ `${i + 1}`;
+    let tempString = questionPropertiesArr[i] + '=$' + `${i + 1}`;
     questionPropertiesArr[i] = tempString;
   }
-  const idStringInject = '$'+`${i + 1}`;
+  const idStringInject = '$' + `${i + 1}`;
 
   try {
-    await client.query("UPDATE questions SET "+ questionPropertiesArr +" WHERE question_id = "+ idStringInject, [...questionValuesArr, id]);
+    await client.query(
+      'UPDATE questions SET ' +
+        questionPropertiesArr +
+        ' WHERE question_id = ' +
+        idStringInject,
+      [...questionValuesArr, id]
+    );
     console.log('Question Updated Successfully!');
   } catch (err) {
     console.log(err);
@@ -116,5 +141,5 @@ module.exports = {
   insertQuestion,
   deleteQuestion,
   getAllFieldsSingleQuestion,
-  updateQuestion
-}
+  updateQuestion,
+};
