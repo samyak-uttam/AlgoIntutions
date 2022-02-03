@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dbOperations = require(__dirname + '/dbOperations.js');
+var favicon = require('serve-favicon');
+var path = require('path');
 
 const app = express();
 
@@ -9,6 +11,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(express.json());
+app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 dbOperations.clientConnect();
 
