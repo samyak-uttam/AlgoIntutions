@@ -18,7 +18,6 @@ a {
   display: flex;
   flex-direction: column;
   font-size: 1.1rem;
-  min-height: 84vh;
 }
 
 /* Navbar */
@@ -64,7 +63,7 @@ a {
 /* default question card list sytling */
 .questions-list {
   margin-bottom: 1rem;
-  min-height: calc(100vh - 18rem);
+  min-height: calc(100vh - 20.6rem);
 }
 
 .questions-card {
@@ -152,6 +151,12 @@ textarea {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
+}
+
+/* Category Page */
+.categoryName {
+  font-weight: bold;
+  margin: 1.5rem auto;
 }
 
 /* question page */

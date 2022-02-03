@@ -40,8 +40,7 @@ async function clientDisConnect() {
 async function getAllQuestionsCount() {
   try {
     const questionsTableLength = await client.query(
-      'SELECT COUNT(question_id) FROM questions'
-    );
+      'SELECT COUNT(question_id) FROM questions');
     return questionsTableLength;
   } catch (err) {
     console.log(err);
@@ -51,9 +50,7 @@ async function getAllQuestionsCount() {
 async function readSingleQues(columns, title) {
   try {
     const question = await client.query(
-      'SELECT ' + columns + ' from questions where title = ($1)',
-      title
-    );
+      'SELECT ' + columns + ' from questions where title = ($1)', title);
     return question;
   } catch (err) {
     console.log(err);
@@ -63,8 +60,7 @@ async function readSingleQues(columns, title) {
 async function readQuestions(columns) {
   try {
     const allQuestions = await client.query(
-      'SELECT ' + columns + ' from questions'
-    );
+      'SELECT ' + columns + ' from questions');
     return allQuestions;
   } catch (err) {
     console.log(err);
@@ -74,9 +70,7 @@ async function readQuestions(columns) {
 async function readQuestionsOfHomePage(columns, paginationArr) {
   try {
     let questions = await client.query(
-      'SELECT ' + columns + ' FROM questions LIMIT $1 OFFSET $2',
-      paginationArr
-    );
+      'SELECT ' + columns + ' FROM questions LIMIT $1 OFFSET $2', paginationArr);
     return questions;
   } catch (err) {
     console.log(err);
@@ -86,9 +80,7 @@ async function readQuestionsOfHomePage(columns, paginationArr) {
 async function readQuesByTagTotalCount(tag) {
   try {
     const taggedQuestions = await client.query(
-      'SELECT COUNT(question_id) FROM questions WHERE ($1) = ANY(tags)',
-      [tag]
-    );
+      'SELECT COUNT(question_id) FROM questions WHERE ($1) = ANY(tags)', [tag]);
     return taggedQuestions;
   } catch (err) {
     console.log(err);
@@ -98,11 +90,8 @@ async function readQuesByTagTotalCount(tag) {
 async function readQuesByTag(columns, tag, paginationArr) {
   try {
     const taggedQuestions = await client.query(
-      'SELECT ' +
-        columns +
-        ' from questions where ($1) = ANY(tags) LIMIT $2 OFFSET $3',
-      [tag, ...paginationArr]
-    );
+      'SELECT ' + columns + ' from questions where ($1) = ANY(tags) LIMIT $2 OFFSET $3',
+      [tag, ...paginationArr]);
     return taggedQuestions;
   } catch (err) {
     console.log(err);
@@ -112,9 +101,7 @@ async function readQuesByTag(columns, tag, paginationArr) {
 async function readQuestionByDifficultyTotalCount(difficulty) {
   try {
     const questionCount = await client.query(
-      'SELECT COUNT(question_id) FROM questions WHERE difficulty = $1',
-      [difficulty]
-    );
+      'SELECT COUNT(question_id) FROM questions WHERE difficulty = $1', [difficulty]);
     return questionCount;
   } catch (err) {
     console.log(err);
@@ -124,11 +111,8 @@ async function readQuestionByDifficultyTotalCount(difficulty) {
 async function readQuesByDifficulty(columns, difficulty, paginationArr) {
   try {
     const questions = await client.query(
-      'SELECT ' +
-        columns +
-        ' FROM questions WHERE difficulty = $1 LIMIT $2 OFFSET $3',
-      [difficulty, ...paginationArr]
-    );
+      'SELECT ' + columns + ' FROM questions WHERE difficulty = $1 LIMIT $2 OFFSET $3',
+      [difficulty, ...paginationArr]);
     return questions;
   } catch (err) {
     console.log(err);
@@ -137,12 +121,8 @@ async function readQuesByDifficulty(columns, difficulty, paginationArr) {
 
 async function insertQuestion(questionPropertiesArr, questionValuesArr) {
   try {
-    await client.query(
-      'INSERT INTO questions (' +
-        questionPropertiesArr +
-        ') VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
-      questionValuesArr
-    );
+    await client.query('INSERT INTO questions (' + questionPropertiesArr +
+        ') VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)', questionValuesArr);
     console.log('Question inserted successfully!');
   } catch (err) {
     console.log(err);
@@ -161,9 +141,7 @@ async function deleteQuestion(id) {
 async function getAllFieldsSingleQuestion(id) {
   try {
     const questionDetails = await client.query(
-      'SELECT * FROM questions WHERE question_id = $1',
-      [id]
-    );
+      'SELECT * FROM questions WHERE question_id = $1', [id]);
     return questionDetails;
   } catch (err) {
     console.log(err);
