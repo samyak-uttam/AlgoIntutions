@@ -1,17 +1,19 @@
 <div class="pagination-cont">
   <nav aria-label="Page navigation example">
     <ul class="pagination">
-      <li class="page-item">
-        <a class="page-link" href="#" tabindex="-1">Previous</a>
+      <li class="page-item <%= pagination.prev === undefined ? 'disabled' : '' %>">
+        <a class="page-link" href="/?page=<%= pagination.prev !== undefined ? pagination.prev.page : ''%>"
+          tabindex="-1">Previous</a>
       </li>
       <% for (let i=0; i < totalPages; i++) { %>
-        <li class="page-item <% currentPage === (i + 1) ? 'active' : ''; %>"><a class="page-link"
+        <li class="page-item <%= (currentPage === (i + 1) ? 'active' : '' )%>"><a class="page-link"
             href="/?page=<%=i+1%>">
             <%= i + 1%>
           </a></li>
         <% } %>
-          <li class="page-item">
-            <a class="page-link" href="#">Next</a>
+          <li class="page-item <%= pagination.next === undefined ? 'disabled' : '' %>">
+            <a class="page-link" href="/?page=<%= pagination.next !== undefined ? pagination.next.page : ''%>"
+              tabindex="-1">Next</a>
           </li>
     </ul>
   </nav>

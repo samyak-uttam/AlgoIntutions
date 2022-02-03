@@ -9,6 +9,16 @@ const client = new Client({
   },
 });
 
+// To connect Locally
+// const client = new Client({
+//   // comment my credentials for development :)
+//   user: 'admin64',
+//   host: 'localhost',
+//   password: '751101@admin',
+//   port: 5432,
+//   database: 'algointutions',
+// });
+
 async function clientConnect() {
   try {
     await client.connect();
@@ -22,6 +32,17 @@ async function clientDisConnect() {
   try {
     await client.end();
     console.log('Client disconnected successfully.');
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function getAllQuestionsCount() {
+  try {
+    const questionsTableLength = await client.query(
+      'SELECT COUNT(question_id) FROM questions'
+    );
+    return questionsTableLength;
   } catch (err) {
     console.log(err);
   }
@@ -45,6 +66,18 @@ async function readQuestions(columns) {
       'SELECT ' + columns + ' from questions'
     );
     return allQuestions;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function readQuestionsOfPage(columns, paginationArr) {
+  try {
+    let questions = await client.query(
+      'SELECT ' + columns + ' FROM questions LIMIT $1 OFFSET $2',
+      paginationArr
+    );
+    return questions;
   } catch (err) {
     console.log(err);
   }
@@ -134,9 +167,11 @@ async function updateQuestion(id, questionPropertiesArr, questionValuesArr) {
 module.exports = {
   clientConnect,
   clientDisConnect,
+  getAllQuestionsCount,
   readSingleQues,
   readQuestions,
   readQuesByDifficulty,
+  readQuestionsOfPage,
   readQuesByTag,
   insertQuestion,
   deleteQuestion,
