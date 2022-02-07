@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const dbOperations = require(__dirname + '/utils/dbOperations.js');
 var favicon = require('serve-favicon');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 var path = require('path');
 
 const app = express();
@@ -24,13 +26,13 @@ const categories = [
   'Greedy',
   'Queue',
   'Stack',
-  'String',
+  'String'
 ];
 const difficulties = ['Easy', 'Medium', 'Hard'];
 const diffColors = {
   Easy: '#5cb85b',
   Medium: '#ffa116',
-  Hard: '#d9534e',
+  Hard: '#d9534e'
 };
 
 app.use(function (req, res, next) {
@@ -51,7 +53,10 @@ app.get('/', async function (req, res) {
     let total = await dbOperations.getAllQuestionsCount();
     total = total.rows[0].count;
 
-    const { page, limit, startIndex, pagination } = getPaginationDataObject(req, total);
+    const { page, limit, startIndex, pagination } = getPaginationDataObject(
+      req,
+      total
+    );
 
     questions = await dbOperations.readQuestionsOfHomePage(
       ['title', 'difficulty', 'tags', 'explanation'],
@@ -65,7 +70,7 @@ app.get('/', async function (req, res) {
       path: req.path,
       currentPage: page,
       totalPages: total / limit,
-      backgroundColors: getBackgroundColors(questions.rows),
+      backgroundColors: getBackgroundColors(questions.rows)
     });
   } catch (err) {
     console.log(err);
@@ -76,10 +81,15 @@ app.get('/', async function (req, res) {
 app.get('/tag/:difficulty', async function (req, res) {
   try {
     let difficulty = req.params.difficulty;
-    let total = await dbOperations.readQuestionByDifficultyTotalCount(difficulty);
+    let total = await dbOperations.readQuestionByDifficultyTotalCount(
+      difficulty
+    );
     total = total.rows[0].count;
 
-    const { pagination, startIndex, limit, page } = getPaginationDataObject(req, total);
+    const { pagination, startIndex, limit, page } = getPaginationDataObject(
+      req,
+      total
+    );
 
     let questions = await dbOperations.readQuesByDifficulty(
       ['title', 'difficulty', 'tags', 'explanation'],
@@ -95,7 +105,7 @@ app.get('/tag/:difficulty', async function (req, res) {
       path: req.path,
       currentPage: page,
       totalPages: total / limit,
-      backgroundColors: getBackgroundColors(questions.rows),
+      backgroundColors: getBackgroundColors(questions.rows)
     });
   } catch (err) {
     console.log(err);
@@ -112,7 +122,10 @@ app.get('/category/:categoryName', async function (req, res) {
     }
     total = total.rows[0].count;
 
-    const { pagination, startIndex, limit, page } = getPaginationDataObject(req, total);
+    const { pagination, startIndex, limit, page } = getPaginationDataObject(
+      req,
+      total
+    );
 
     let questions = await dbOperations.readQuesByTag(
       ['title', 'difficulty', 'tags', 'explanation'],
@@ -128,7 +141,7 @@ app.get('/category/:categoryName', async function (req, res) {
       path: req.path,
       currentPage: page,
       totalPages: total / limit,
-      backgroundColors: getBackgroundColors(questions.rows),
+      backgroundColors: getBackgroundColors(questions.rows)
     });
   } catch (err) {
     console.log(err);
@@ -143,11 +156,24 @@ app.get('/question/:questionTitle', async function (req, res) {
     let question = await dbOperations.readSingleQues('*', [questionTitle]);
     question = question.rows[0];
     questionArr.push(question);
-    while(question.continuedid != null) {
-      question = await dbOperations.readQuesById(
-        ['intuition', 'approach', 'imageLinks', 'codeCpp', 'codeJava', 'codePython', 'description', 'continuedId'], [question.continuedid]);
+    if (typeof question.continuedid != 'null') {
+      while (question.continuedid != null) {
+        question = await dbOperations.readQuesById(
+          [
+            'intuition',
+            'approach',
+            'imageLinks',
+            'codeCpp',
+            'codeJava',
+            'codePython',
+            'description',
+            'continuedId'
+          ],
+          [question.continuedid]
+        );
         question = question.rows[0];
-      questionArr.push(question);
+        questionArr.push(question);
+      }
     }
     if (questionArr[0].length === 0) {
       res.redirect(301, '/questionNotFound');
@@ -155,7 +181,7 @@ app.get('/question/:questionTitle', async function (req, res) {
       res.render('question', {
         questionArr: questionArr,
         categories: categories,
-        backgroundColor: diffColors[questionArr[0].difficulty],
+        backgroundColor: diffColors[questionArr[0].difficulty]
       });
     }
   } catch (err) {
@@ -163,22 +189,100 @@ app.get('/question/:questionTitle', async function (req, res) {
   }
 });
 
+// Register Route
+app.get('/admin/register', function (req, res) {
+  res.render('register');
+});
+
+app.post('/admin/register', async function (req, res) {
+  let { name, email, password, password2 } = req.body;
+
+  let errors = [];
+
+  if (!name || !email || !password || !password2) {
+    errors.push({ message: 'Please enter all fields' });
+  }
+
+  if (password.length < 6) {
+    errors.push({ message: 'Password should be at least 6 characters' });
+  }
+
+  if (password != password2) {
+    errors.push({ message: 'Passwords do not match' });
+  }
+
+  if (errors.length !== 0) {
+    res.render('register', {
+      errors
+    });
+  } else {
+    try {
+      const isUserExists = await dbOperations.checkUserExists(email);
+      console.log(email);
+      if (isUserExists.rows.length > 0) {
+        errors.push({ message: 'Email already registered, Please login' });
+        return res.render('register', {
+          errors
+        });
+      }
+
+      // encrypt password using bcrypt
+      const salt = await bcrypt.genSalt(10);
+      password = await bcrypt.hash(password, salt);
+
+      // Saving the user into db
+      const user = await dbOperations.createUser(
+        ['name', 'email', 'password'],
+        [name, email, password]
+      );
+
+      // Create JWT token
+      const token = jwt.sign({ id: user }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRE
+      });
+
+      const options = {
+        expires: new Date(
+          Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true
+      };
+
+      if (process.env.NODE_ENV === 'production') {
+        options.secure = true;
+      }
+
+      res // Force break
+        .status(200)
+        .cookie('token', token, options)
+        .json({
+          success: true,
+          token
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+});
+
 // Create a question
+// Private Route
 app.get('/admin/add-question', function (req, res) {
   res.render('createQuestion', {
     questionTitle: 'Create Question',
-    categories: categories,
+    categories: categories
   });
 });
 
 // Update questions page
+// Private Route
 app.get('/admin/update-question', async function (req, res) {
   const columns = ['question_id', 'title', 'explanation'];
   try {
     const questions = await dbOperations.readQuestions(columns);
     res.render('updatePageQuestions', {
       questionsList: questions.rows,
-      categories: categories,
+      categories: categories
     });
   } catch (err) {
     console.log(err);
@@ -186,6 +290,7 @@ app.get('/admin/update-question', async function (req, res) {
 });
 
 // Update a single question
+// Private Route
 app.get('/admin/update-question/:id', async function (req, res) {
   const { id } = req.params;
   let question, imageLinksValue;
@@ -199,14 +304,14 @@ app.get('/admin/update-question/:id', async function (req, res) {
   res.render('updateQuestionForm', {
     question: question.rows[0],
     imageLinks: imageLinksValue,
-    categories: categories,
+    categories: categories
   });
 });
 
 // page Not found
 app.get('/:anyOtherUrl', function (req, res) {
   res.render('pageNotFound', {
-    categories: categories,
+    categories: categories
   });
 });
 
@@ -230,7 +335,7 @@ app.get('/admin/update-question', async function (req, res) {
     const questions = await dbOperations.readQuestions(columns);
     res.render('updatePageQuestions', {
       questionsList: questions.rows,
-      categories: categories,
+      categories: categories
     });
   } catch (err) {
     console.log(err);
@@ -250,7 +355,7 @@ app.get('/admin/update-question/:id', async function (req, res) {
   res.render('updateQuestionForm', {
     question: question.rows[0],
     imageLinks: imageLinksValue,
-    categories: categories,
+    categories: categories
   });
 });
 
@@ -291,7 +396,7 @@ app.delete('/admin/:id', async function (req, res) {
 // page Not found
 app.get('/:anyOtherUrl', function (req, res) {
   res.render('pageNotFound', {
-    categories: categories,
+    categories: categories
   });
 });
 
@@ -313,14 +418,14 @@ function getPaginationDataObject(req, total) {
   if (endIndex < total) {
     pagination.next = {
       page: page + 1,
-      limit,
+      limit
     };
   }
 
   if (startIndex > 0) {
     pagination.prev = {
       page: page - 1,
-      limit,
+      limit
     };
   }
   return { page, limit, startIndex, endIndex, pagination };
@@ -348,7 +453,7 @@ function getBodyPropertiesAndValues(dataObj) {
     } else {
       dataValue = dataObj[property];
     }
-    if(dataValue === '') {
+    if (dataValue === '') {
       questionValuesArr.push(null);
     } else {
       questionValuesArr.push(dataValue);
@@ -359,7 +464,7 @@ function getBodyPropertiesAndValues(dataObj) {
 
   return {
     questionPropertiesArr,
-    questionValuesArr,
+    questionValuesArr
   };
 }
 

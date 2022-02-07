@@ -35,3 +35,13 @@ SELECT * FROM questions;
 -- Granting priveleges in ubuntu
 GRANT ALL PRIVILEGES ON TABLE questions TO admin64;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO admin64;
+
+CREATE TABLE users (
+    user_id serial NOT NULL PRIMARY KEY,
+    name varchar(200) NOT NULL,
+    email varchar(200) NOT NULL,
+    password varchar(200) NOT NULL,
+    unique(email)
+);
+
+SELECT * FROM users;
