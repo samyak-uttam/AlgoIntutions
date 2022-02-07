@@ -37,26 +37,6 @@ async function clientDisConnect() {
   }
 }
 
-async function getAllQuestionsCount() {
-  try {
-    const questionsTableLength = await client.query(
-      'SELECT COUNT(question_id) FROM questions');
-    return questionsTableLength;
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-async function readSingleQues(columns, title) {
-  try {
-    const question = await client.query(
-      'SELECT ' + columns + ' from questions where title = ($1)', title);
-    return question;
-  } catch (err) {
-    console.log(err);
-  }
-}
-
 async function readQuestions(columns) {
   try {
     const allQuestions = await client.query(
@@ -67,10 +47,20 @@ async function readQuestions(columns) {
   }
 }
 
+async function getAllQuestionsCount() {
+  try {
+    const questionsTableLength = await client.query(
+      'SELECT COUNT(question_id) FROM questions WHERE title IS NOT NULL');
+    return questionsTableLength;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function readQuestionsOfHomePage(columns, paginationArr) {
   try {
     let questions = await client.query(
-      'SELECT ' + columns + ' FROM questions LIMIT $1 OFFSET $2', paginationArr);
+      'SELECT ' + columns + ' FROM questions WHERE title IS NOT NULL LIMIT $1 OFFSET $2', paginationArr);
     return questions;
   } catch (err) {
     console.log(err);
@@ -119,6 +109,36 @@ async function readQuesByDifficulty(columns, difficulty, paginationArr) {
   }
 }
 
+async function readQuesById(columns, questionId) {
+  try {
+    const question = await client.query(
+      'SELECT ' + columns + ' from questions where question_id = ($1)', questionId);
+    return question;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function readSingleQues(columns, title) {
+  try {
+    const question = await client.query(
+      'SELECT ' + columns + ' from questions where title = ($1)', title);
+    return question;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function getAllFieldsSingleQuestion(id) {
+  try {
+    const questionDetails = await client.query(
+      'SELECT * FROM questions WHERE question_id = $1', [id]);
+    return questionDetails;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function insertQuestion(questionPropertiesArr, questionValuesArr) {
   try {
     await client.query('INSERT INTO questions (' + questionPropertiesArr +
@@ -133,16 +153,6 @@ async function deleteQuestion(id) {
   try {
     await client.query('DELETE FROM questions WHERE question_id = $1', [id]);
     console.log('Question deleted successfully!');
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-async function getAllFieldsSingleQuestion(id) {
-  try {
-    const questionDetails = await client.query(
-      'SELECT * FROM questions WHERE question_id = $1', [id]);
-    return questionDetails;
   } catch (err) {
     console.log(err);
   }
@@ -174,6 +184,7 @@ module.exports = {
   clientConnect,
   clientDisConnect,
   getAllQuestionsCount,
+  readQuesById,
   readSingleQues,
   readQuestions,
   readQuestionByDifficultyTotalCount,

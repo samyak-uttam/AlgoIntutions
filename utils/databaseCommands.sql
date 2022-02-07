@@ -11,9 +11,9 @@ DROP TABLE IF EXISTS public.questions;
 CREATE TABLE public.questions
 (
     question_id serial NOT NULL,
-    title character varying NOT NULL,
-    difficulty character varying NOT NULL,
-    explanation text NOT NULL,
+    title character varying,
+    difficulty character varying,
+    explanation text,
     intuition text,
     approach text,
     imageLinks character varying[],
@@ -23,6 +23,7 @@ CREATE TABLE public.questions
     description text,
     numLikes integer DEFAULT 0,
     tags character varying[],
+    continuedId integer,
     PRIMARY KEY (question_id)
 );
 

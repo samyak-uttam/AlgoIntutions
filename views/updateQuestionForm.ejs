@@ -48,6 +48,10 @@
         <label for="exampleFormControlTextarea1">Tags</label>
         <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" name="tags" placeholder="Enter tags with comma seperated without any space"><%=question.tags%></textarea>
     </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Continued Id</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" name="continuedId" placeholder="Enter the question id of continued question."><%=question.continuedId%></textarea>
+    </div>
     <div class="button-cont">
         <button type="submit" class="btn btn-primary">Update</button>
     </div>

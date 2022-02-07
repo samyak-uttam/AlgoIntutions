@@ -2,63 +2,65 @@
 
 <div class="question-card card">
   <div class="card-body">
-    <h2><%= question.title %></h2>
+    <h2><%= questionArr[0].title %></h2>
     <div class="question-info">
       <div class="difficulty-tag">
-        <a href="/tag/<%= question.difficulty %>" style="background-color: <%= backgroundColor %>;">
-          <%= question.difficulty %>
+        <a href="/tag/<%= questionArr[0].difficulty %>" style="background-color: <%= backgroundColor %>;">
+          <%= questionArr[0].difficulty %>
         </a>
       </div>
       <div class="topics-tag">
-        <% question.tags.forEach(function(topic) { %>
+        <% questionArr[0].tags.forEach(function(topic) { %>
         <span class="topic">
           <a href="/category/<%=topic%>"><%= topic %></a>
         </span>
         <% }) %>
       </div>
     </div>
-    <p><%= question.explanation %></p>
+    <p><%= questionArr[0].explanation %></p>
     <br>
     <h2>Solution:</h2>
-    <% if (question.intuition) { %>
-      <p><%= question.intuition %></p>
-    <% } %>
-    <p><%= question.approach %></p>
-    <% if (question.imagelinks[0] != "") { %>
-      <div class="question-image-cont">
-        <% for (let i = 0; i < question.imagelinks.length; i++) { %>
-          <img class="question-approach-image" src="<%= question.imagelinks[i]%>" alt="<%=question.title%> image">
-        <% } %>
+    <% for(let i = 0; i < questionArr.length; i++) { %>
+      <% if (questionArr[i].intuition) { %>
+        <p><%= questionArr[i].intuition %></p>
+      <% } %>
+      <p><%= questionArr[i].approach %></p>
+      <% if (questionArr[i].imagelinks[0] != "") { %>
+        <div class="question-image-cont">
+          <% for (let i = 0; i < questionArr[i].imagelinks.length; i++) { %>
+            <img class="question-approach-image" src="<%= questionArr[i].imagelinks[i]%>" alt="<%=questionArr[i].title%> image">
+          <% } %>
+        </div>
+      <% } %>
+      <div class="container">
+        <nav>
+          <div class="nav nav-tabs" id="nav-tab">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#cpp-code_<%= i %>" type="button">C++</button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#java-code_<%= i %>" type="button">Java</button>
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#python-code_<%= i %>" type="button">Python</button>
+          </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+          <div id="cpp-code_<%= i %>" class="tab-pane show active">
+            <pre class="line-numbers">
+                <code class="language-cpp"><%= questionArr[i].codecpp %></code>
+            </pre>
+          </div>
+          <div id="java-code_<%= i %>" class="tab-pane fade">
+            <pre class="line-numbers">
+                <code class="language-java"><%= questionArr[i].codejava %></code>
+            </pre>
+          </div>
+          <div id="python-code_<%= i %>" class="tab-pane fade">
+            <pre class="line-numbers">
+                <code class="language-python"><%= questionArr[i].codepython %></code>
+            </pre>
+          </div>
+        </div>
       </div>
+      <br>
+      <p><%= questionArr[i].description %></p>
     <% } %>
-    <div class="container">
-      <nav>
-        <div class="nav nav-tabs" id="nav-tab">
-          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#cpp-code" type="button">C++</button>
-          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#java-code" type="button">Java</button>
-          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#python-code" type="button">Python</button>
-        </div>
-      </nav>
-      <div class="tab-content" id="nav-tabContent">
-        <div id="cpp-code" class="tab-pane show active">
-          <pre class="line-numbers">
-              <code class="language-cpp"><%= question.codecpp %></code>
-          </pre>
-        </div>
-        <div id="java-code" class="tab-pane fade">
-          <pre class="line-numbers">
-              <code class="language-java"><%= question.codejava %></code>
-          </pre>
-        </div>
-        <div id="python-code" class="tab-pane fade">
-          <pre class="line-numbers">
-              <code class="language-python"><%= question.codepython %></code>
-          </pre>
-        </div>
-      </div>
-    </div>
-    <br>
-    <p><%= question.description %></p>
   </div>
 </div>
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const dbOperations = require(__dirname + '/dbOperations.js');
+const dbOperations = require(__dirname + '/utils/dbOperations.js');
 var favicon = require('serve-favicon');
 var path = require('path');
 
@@ -139,14 +139,23 @@ app.get('/category/:categoryName', async function (req, res) {
 app.get('/question/:questionTitle', async function (req, res) {
   try {
     let questionTitle = req.params.questionTitle;
+    questionArr = [];
     let question = await dbOperations.readSingleQues('*', [questionTitle]);
-    if (question.rows.length === 0) {
+    question = question.rows[0];
+    questionArr.push(question);
+    while(question.continuedid != null) {
+      question = await dbOperations.readQuesById(
+        ['intuition', 'approach', 'imageLinks', 'codeCpp', 'codeJava', 'codePython', 'description', 'continuedId'], [question.continuedid]);
+        question = question.rows[0];
+      questionArr.push(question);
+    }
+    if (questionArr[0].length === 0) {
       res.redirect(301, '/questionNotFound');
     } else {
       res.render('question', {
-        question: question.rows[0],
+        questionArr: questionArr,
         categories: categories,
-        backgroundColor: diffColors[question.rows[0].difficulty],
+        backgroundColor: diffColors[questionArr[0].difficulty],
       });
     }
   } catch (err) {
@@ -339,8 +348,14 @@ function getBodyPropertiesAndValues(dataObj) {
     } else {
       dataValue = dataObj[property];
     }
-    questionValuesArr.push(dataValue);
+    if(dataValue === '') {
+      questionValuesArr.push(null);
+    } else {
+      questionValuesArr.push(dataValue);
+    }
   }
+  console.log(questionPropertiesArr);
+  console.log(questionValuesArr);
 
   return {
     questionPropertiesArr,
