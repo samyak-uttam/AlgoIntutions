@@ -22,8 +22,13 @@ exports.protect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+    console.log(decoded);
     const user = await dbOperations.checkUserExistsById(decoded.id);
+
+    if (user.rows.length === 0) {
+      errors.push({ message: 'Invalid credentials' });
+      return res.render('login', { errors });
+    }
 
     let userObj = JSON.stringify(user.rows[0]);
     userObj = JSON.parse(userObj);

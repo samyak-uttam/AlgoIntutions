@@ -261,14 +261,14 @@ app.post('/admin/login', async function (req, res) {
 
   const isUserExists = await dbOperations.checkUserExists(email);
 
-  let userObj = JSON.stringify(isUserExists.rows[0]);
-  userObj = JSON.parse(userObj);
-  console.log(userObj);
-
   if (isUserExists.rows.length == 0) {
     errors.push({ message: 'Invalid credentials' });
     return res.render('login', { errors });
   }
+
+  let userObj = JSON.stringify(isUserExists.rows[0]);
+  userObj = JSON.parse(userObj);
+  console.log(userObj);
 
   const isPasswordMatch = await bcrypt.compare(password, userObj.password);
 
