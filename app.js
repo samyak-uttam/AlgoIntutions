@@ -457,7 +457,6 @@ const sendTokenResponse = (res, userId) => {
   }
 
   res // Force break
-    .status(200)
     .cookie('token', token, options)
     .redirect('/');
 };
