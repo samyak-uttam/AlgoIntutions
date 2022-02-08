@@ -36,11 +36,15 @@ SELECT * FROM questions;
 GRANT ALL PRIVILEGES ON TABLE questions TO admin64;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO admin64;
 
+-- users table for authorizing private routes
+CREATE TYPE valid_roles AS ENUM ('user', 'admin');
+
 CREATE TABLE users (
     user_id serial NOT NULL PRIMARY KEY,
     name varchar(200) NOT NULL,
     email varchar(200) NOT NULL,
     password varchar(200) NOT NULL,
+    role valid_roles DEFAULT 'user',
     unique(email)
 );
 

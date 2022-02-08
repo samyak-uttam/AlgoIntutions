@@ -3,7 +3,9 @@ const bodyParser = require('body-parser');
 const dbOperations = require(__dirname + '/utils/dbOperations.js');
 var favicon = require('serve-favicon');
 const bcrypt = require('bcryptjs');
+const { protect } = require('./middleware/auth');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 var path = require('path');
 
 const app = express();
@@ -11,6 +13,7 @@ const app = express();
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(express.static('public'));
 app.use(express.json());
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
@@ -218,7 +221,6 @@ app.post('/admin/register', async function (req, res) {
   } else {
     try {
       const isUserExists = await dbOperations.checkUserExists(email);
-      console.log(email);
       if (isUserExists.rows.length > 0) {
         errors.push({ message: 'Email already registered, Please login' });
         return res.render('register', {
@@ -226,44 +228,83 @@ app.post('/admin/register', async function (req, res) {
         });
       }
 
-      // encrypt password using bcrypt
       const salt = await bcrypt.genSalt(10);
       password = await bcrypt.hash(password, salt);
 
-      // Saving the user into db
       const user = await dbOperations.createUser(
         ['name', 'email', 'password'],
         [name, email, password]
       );
 
-      // Create JWT token
-      const token = jwt.sign({ id: user }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE
-      });
-
-      const options = {
-        expires: new Date(
-          Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-        ),
-        httpOnly: true
-      };
-
-      if (process.env.NODE_ENV === 'production') {
-        options.secure = true;
-      }
-
-      res // Force break
-        .status(200)
-        .cookie('token', token, options)
-        .json({
-          success: true,
-          token
-        });
+      let userObj = JSON.stringify(user.rows[0]);
+      userObj = JSON.parse(userObj);
+      sendTokenResponse(res, userObj.user_id);
     } catch (err) {
       console.log(err);
     }
   }
 });
+
+// Login Route
+app.get('/admin/login', function (req, res) {
+  res.render('login');
+});
+
+app.post('/admin/login', async function (req, res) {
+  const { email, password } = req.body;
+
+  let errors = [];
+
+  if (!email || !password) {
+    errors.push({ message: 'Please provide an email and password' });
+  }
+
+  const isUserExists = await dbOperations.checkUserExists(email);
+
+  let userObj = JSON.stringify(isUserExists.rows[0]);
+  userObj = JSON.parse(userObj);
+  console.log(userObj);
+
+  if (isUserExists.rows.length == 0) {
+    errors.push({ message: 'Invalid credentials' });
+    return res.render('login', { errors });
+  }
+
+  const isPasswordMatch = await bcrypt.compare(password, userObj.password);
+
+  if (!isPasswordMatch) {
+    errors.push({ message: 'Passwords do not match!' });
+    return res.render('login', { errors });
+  }
+
+  sendTokenResponse(res, userObj.user_id);
+});
+
+// utility function to send token from register and login
+const sendTokenResponse = (res, userId) => {
+  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE
+  });
+
+  const options = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true
+  };
+
+  if (process.env.NODE_ENV === 'production') {
+    options.secure = true;
+  }
+
+  res // Force break
+    .status(200)
+    .cookie('token', token, options)
+    .json({
+      success: true,
+      token
+    });
+};
 
 // Create a question
 // Private Route

@@ -13,6 +13,17 @@
     <div class="container">
         <h1>Login</h1>
 
+        <ul>
+            <% if (typeof errors !='undefined' ) { %>
+                <% for (let i=0; i < errors.length; i++) {%>
+                    <li>
+                        <%= errors[i].message %>
+                    </li>
+                    <% } %>
+
+                        <% } %>
+        </ul>
+
         <form action="/admin/login" method="post">
             <div>
                 <input type="email" name="email" id="email" placeholder="Email" required>

@@ -230,7 +230,7 @@ async function createUser(columns, values) {
       'SELECT user_id from users WHERE email = $1',
       [values[1]]
     );
-    return userInserted.rows[0].user_id;
+    return userInserted;
   } catch (err) {
     console.log(err);
   }
