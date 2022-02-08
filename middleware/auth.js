@@ -17,7 +17,7 @@ exports.protect = async (req, res, next) => {
   let errors = [];
   if (!token) {
     errors.push({ message: 'Not authorized to access this route' });
-    res.render('login', { errors });
+    return res.render('login', { errors });
   }
 
   try {
@@ -27,18 +27,16 @@ exports.protect = async (req, res, next) => {
 
     let userObj = JSON.stringify(user.rows[0]);
     userObj = JSON.parse(userObj);
-
+    console.log(userObj);
     if (userObj.role == 'user') {
       errors.push({ message: 'Not authorized to access this route' });
       res.render('register', {
         errors
       });
+    } else {
+      return next();
     }
-
-    return next();
   } catch (err) {
     errors.push({ message: 'Not authorized to access this route' });
   }
-
-  return res.render('login', errors);
 };
