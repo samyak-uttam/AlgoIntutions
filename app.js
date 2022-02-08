@@ -280,44 +280,14 @@ app.post('/admin/login', async function (req, res) {
   sendTokenResponse(res, userObj.user_id);
 });
 
-// utility function to send token from register and login
-const sendTokenResponse = (res, userId) => {
-  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE
-  });
-
-  const options = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-    ),
-    httpOnly: true
-  };
-
-  if (process.env.NODE_ENV === 'production') {
-    options.secure = true;
-  }
-
-  res // Force break
-    .status(200)
-    .cookie('token', token, options)
-    .json({
-      success: true,
-      token
-    });
-};
-
-// Create a question
-// Private Route
-app.get('/admin/add-question', function (req, res) {
+app.get('/admin/add-question', protect, function (req, res) {
   res.render('createQuestion', {
     questionTitle: 'Create Question',
     categories: categories
   });
 });
 
-// Update questions page
-// Private Route
-app.get('/admin/update-question', async function (req, res) {
+app.get('/admin/update-question', protect, async function (req, res) {
   const columns = ['question_id', 'title', 'explanation'];
   try {
     const questions = await dbOperations.readQuestions(columns);
@@ -330,9 +300,7 @@ app.get('/admin/update-question', async function (req, res) {
   }
 });
 
-// Update a single question
-// Private Route
-app.get('/admin/update-question/:id', async function (req, res) {
+app.get('/admin/update-question/:id', protect, async function (req, res) {
   const { id } = req.params;
   let question, imageLinksValue;
   try {
@@ -357,7 +325,7 @@ app.get('/:anyOtherUrl', function (req, res) {
 });
 
 // POST ROUTES
-app.post('/admin', async function (req, res) {
+app.post('/admin', protect, async function (req, res) {
   try {
     const dataObj = req.body;
     const { questionPropertiesArr, questionValuesArr } =
@@ -370,39 +338,9 @@ app.post('/admin', async function (req, res) {
   res.redirect(301, '/admin/add-question');
 });
 
-app.get('/admin/update-question', async function (req, res) {
-  const columns = ['question_id', 'title', 'explanation'];
-  try {
-    const questions = await dbOperations.readQuestions(columns);
-    res.render('updatePageQuestions', {
-      questionsList: questions.rows,
-      categories: categories
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-app.get('/admin/update-question/:id', async function (req, res) {
-  const { id } = req.params;
-  let question, imageLinksValue;
-  try {
-    question = await dbOperations.getAllFieldsSingleQuestion(id);
-    imageLinksValue = question.rows[0].imagelinks.join(' ');
-  } catch (err) {
-    console.log(err);
-  }
-
-  res.render('updateQuestionForm', {
-    question: question.rows[0],
-    imageLinks: imageLinksValue,
-    categories: categories
-  });
-});
-
 // PUT ROUTES
 // Update question
-app.put('/admin/:id', async function (req, res) {
+app.put('/admin/:id', protect, async function (req, res) {
   try {
     const { id } = req.params;
     const dataObj = req.body;
@@ -417,24 +355,19 @@ app.put('/admin/:id', async function (req, res) {
   } catch (err) {
     console.log(err);
   }
-  // Not redirecting properly
   res.redirect(301, '/admin/update-question');
 });
 
-// DELETE ROUTES
-// delete question
-app.delete('/admin/:id', async function (req, res) {
+app.delete('/admin/:id', protect, async function (req, res) {
   try {
     const { id } = req.params;
     await dbOperations.deleteQuestion(id);
   } catch (err) {
     console.log(err);
   }
-  // Not redirecting properly
   res.redirect(301, '/admin/update-question');
 });
 
-// page Not found
 app.get('/:anyOtherUrl', function (req, res) {
   res.render('pageNotFound', {
     categories: categories
@@ -447,13 +380,11 @@ const server = app.listen(3000, function () {
 
 // Util functions
 function getPaginationDataObject(req, total) {
-  // pagination
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 10;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
 
-  // Pagination result
   const pagination = {};
 
   if (endIndex < total) {
@@ -508,6 +439,28 @@ function getBodyPropertiesAndValues(dataObj) {
     questionValuesArr
   };
 }
+
+const sendTokenResponse = (res, userId) => {
+  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE
+  });
+
+  const options = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true
+  };
+
+  if (process.env.NODE_ENV === 'production') {
+    options.secure = true;
+  }
+
+  res // Force break
+    .status(200)
+    .cookie('token', token, options)
+    .redirect('/');
+};
 
 process.stdin.resume(); //so the program will not close instantly
 

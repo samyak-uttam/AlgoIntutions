@@ -2,22 +2,22 @@ const { Client } = require('pg');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// const client = new Client({
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: {
-//     rejectUnauthorized: false,
-//   },
-// });
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 // To connect Locally
-const client = new Client({
-  // comment my credentials for development :)
-  user: 'admin64',
-  host: 'localhost',
-  password: '751101@admin',
-  port: 5432,
-  database: 'algointutions'
-});
+// const client = new Client({
+//   // comment my credentials for development :)
+//   user: 'admin64',
+//   host: 'localhost',
+//   password: '751101@admin',
+//   port: 5432,
+//   database: 'algointutions'
+// });
 
 async function clientConnect() {
   try {
@@ -218,6 +218,18 @@ async function checkUserExists(email) {
   }
 }
 
+async function checkUserExistsById(id) {
+  try {
+    const userAlreadyExists = await client.query(
+      'SELECT * FROM users WHERE user_id = $1',
+      [id]
+    );
+    return userAlreadyExists;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function createUser(columns, values) {
   try {
     console.log(columns, values);
@@ -253,5 +265,6 @@ module.exports = {
   getAllFieldsSingleQuestion,
   updateQuestion,
   checkUserExists,
+  checkUserExistsById,
   createUser
 };
