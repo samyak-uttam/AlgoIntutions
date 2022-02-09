@@ -174,18 +174,6 @@ textarea {
   padding: 10px;
 }
 
-.question-approach-image {
-  height: 40%;
-  width: 40%;
-}
-
-.question-image-cont {
-  display: inline-block;
-  gap: 2rem;
-  align-items: center;
-  margin: 10px auto;
-}
-
 .heading-center {
   min-height: calc(100vh - 4rem - 1rem - 3rem);
   display: flex;
@@ -218,7 +206,7 @@ textarea {
 }
 
 .question-approach-image {
-  height: 30rem;
+  height: 25rem;
   width: auto;
 }
 
@@ -227,6 +215,7 @@ textarea {
   flex-direction: column;
   gap: 2rem;
   align-items: center;
+  margin: 10px auto;
 }
 
 .pagination-cont {
