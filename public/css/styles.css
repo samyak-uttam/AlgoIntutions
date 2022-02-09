@@ -233,3 +233,7 @@ textarea {
   display: flex;
   justify-content: center;
 }
+
+.questions-list-home {
+  min-height: calc(100vh - 13.8rem);
+}
