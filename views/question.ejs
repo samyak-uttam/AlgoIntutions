@@ -1,75 +1,82 @@
 <%- include("partials/header"); -%>
 
-<div class="question-card card">
-  <div class="card-body">
-    <h2><%= questionArr[0].title %></h2>
-    <div class="question-info">
-      <div class="difficulty-tag">
-        <a href="/tag/<%= questionArr[0].difficulty %>" style="background-color: <%= backgroundColor %>;">
-          <%= questionArr[0].difficulty %>
-        </a>
-      </div>
-      <div class="topics-tag">
-        <% questionArr[0].tags.forEach(function(topic) { %>
-        <span class="topic">
-          <a href="/category/<%=topic%>"><%= topic %></a>
-        </span>
-        <% }) %>
-      </div>
-    </div>
-    <pre><p><%= questionArr[0].explanation %></p></pre>
-    <% for(let i = 0; i < questionArr.length; i++) { %>
-      <% if (questionArr[i].examples) { %>
-        <pre class="question-examples"><p><%=questionArr[i].examples %></p></pre>
-      <% } %>
-      <% if (questionArr[i].eximagelinks[0] != "") { %>
-        <div class="question-image-cont">
-          <% for (let j = 0; j < questionArr[i].eximagelinks.length; j++) { %>
-            <img src="<%= questionArr[i].eximagelinks[j]%>" alt="<%=questionArr[i].title%> image">
-          <% } %>
+  <div class="question-card card">
+    <div class="card-body">
+      <h2>
+        <%= questionArr[0].title %>
+      </h2>
+      <div class="question-info">
+        <div class="difficulty-tag">
+          <a href="/tag/<%= questionArr[0].difficulty %>" style="background-color: <%= backgroundColor %>;">
+            <%= questionArr[0].difficulty %>
+          </a>
         </div>
-      <% } %>
-      <% if (questionArr[i].intuition) { %>
-        <pre><p><%= questionArr[i].intuition %></p></pre>
-      <% } %>
-      <pre><p><%= questionArr[i].approach %></p></pre>
-      <% if (questionArr[i].imagelinks[0] != "") { %>
-        <div class="question-image-cont">
-          <% for (let j = 0; j < questionArr[i].imagelinks.length; j++) { %>
-            <img class="question-approach-image" src="<%= questionArr[i].imagelinks[j]%>" alt="<%=questionArr[i].title%> image">
-          <% } %>
+        <div class="topics-tag">
+          <% questionArr[0].tags.forEach(function(topic) { %>
+            <span class="topic">
+              <a href="/category/<%=topic%>">
+                <%= topic %>
+              </a>
+            </span>
+            <% }) %>
         </div>
-      <% } %>
-      <div class="container">
-        <nav>
-          <div class="nav nav-tabs" id="nav-tab">
-            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#cpp-code_<%= i %>" type="button">C++</button>
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#java-code_<%= i %>" type="button">Java</button>
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#python-code_<%= i %>" type="button">Python</button>
-          </div>
-        </nav>
-        <div class="tab-content" id="nav-tabContent">
-          <div id="cpp-code_<%= i %>" class="tab-pane show active">
-            <pre class="line-numbers">
+      </div>
+      <pre><p><%= questionArr[0].explanation %></p></pre>
+      <% for(let i=0; i < questionArr.length; i++) { %>
+        <% if (questionArr[i].examples) { %>
+          <pre class="question-examples"><p><%=questionArr[i].examples %></p></pre>
+          <% } %>
+            <% if (questionArr[i].eximagelinks[0] !="" ) { %>
+              <div class="question-image-cont">
+                <% for (let j=0; j < questionArr[i].eximagelinks.length; j++) { %>
+                  <img src="<%= questionArr[i].eximagelinks[j]%>" alt="<%=questionArr[i].title%> image">
+                  <% } %>
+              </div>
+              <% } %>
+                <% if (questionArr[i].intuition) { %>
+                  <pre><p><%= questionArr[i].intuition %></p></pre>
+                  <% } %>
+                    <pre><p><%= questionArr[i].approach %></p></pre>
+                    <% if (questionArr[i].imagelinks[0] !="" ) { %>
+                      <div class="question-image-cont">
+                        <% for (let j=0; j < questionArr[i].imagelinks.length; j++) { %>
+                          <img src="<%= questionArr[i].imagelinks[j]%>" alt="<%=questionArr[i].title%> image">
+                          <% } %>
+                      </div>
+                      <% } %>
+                        <div class="container">
+                          <nav>
+                            <div class="nav nav-tabs" id="nav-tab">
+                              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#cpp-code_<%= i %>"
+                                type="button">C++</button>
+                              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#java-code_<%= i %>"
+                                type="button">Java</button>
+                              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#python-code_<%= i %>"
+                                type="button">Python</button>
+                            </div>
+                          </nav>
+                          <div class="tab-content" id="nav-tabContent">
+                            <div id="cpp-code_<%= i %>" class="tab-pane show active">
+                              <pre class="line-numbers">
                 <code class="language-cpp"><%= questionArr[i].codecpp %></code>
             </pre>
-          </div>
-          <div id="java-code_<%= i %>" class="tab-pane fade">
-            <pre class="line-numbers">
+                            </div>
+                            <div id="java-code_<%= i %>" class="tab-pane fade">
+                              <pre class="line-numbers">
                 <code class="language-java"><%= questionArr[i].codejava %></code>
             </pre>
-          </div>
-          <div id="python-code_<%= i %>" class="tab-pane fade">
-            <pre class="line-numbers">
+                            </div>
+                            <div id="python-code_<%= i %>" class="tab-pane fade">
+                              <pre class="line-numbers">
                 <code class="language-python"><%= questionArr[i].codepython %></code>
             </pre>
-          </div>
-        </div>
-      </div>
-      <br>
-      <pre><p><%= questionArr[i].description %></p></pre>
-    <% } %>
+                            </div>
+                          </div>
+                        </div>
+                        <br>
+                        <pre><p><%= questionArr[i].description %></p></pre>
+                        <% } %>
+    </div>
   </div>
-</div>
 
-<%- include("partials/footer"); -%>
+  <%- include("partials/footer"); -%>

@@ -166,7 +166,7 @@ async function insertQuestion(questionPropertiesArr, questionValuesArr) {
     await client.query(
       'INSERT INTO questions (' +
         questionPropertiesArr +
-        ') VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)',
+        ') VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)',
       questionValuesArr
     );
     console.log('Question inserted successfully!');
