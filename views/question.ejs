@@ -17,14 +17,14 @@
         <% }) %>
       </div>
     </div>
-    <p><%= questionArr[0].explanation %></p>
+    <pre><p><%= questionArr[0].explanation %></p></pre>
     <br>
     <h2>Solution:</h2>
     <% for(let i = 0; i < questionArr.length; i++) { %>
       <% if (questionArr[i].intuition) { %>
-        <p><%= questionArr[i].intuition %></p>
+        <pre><p><%= questionArr[i].intuition %></p></pre>
       <% } %>
-      <p><%= questionArr[i].approach %></p>
+      <pre><p><%= questionArr[i].approach %></p></pre>
       <% if (questionArr[i].imagelinks[0] != "") { %>
         <div class="question-image-cont">
           <% for (let i = 0; i < questionArr[i].imagelinks.length; i++) { %>
@@ -59,7 +59,7 @@
         </div>
       </div>
       <br>
-      <p><%= questionArr[i].description %></p>
+      <pre><p><%= questionArr[i].description %></p></pre>
     <% } %>
   </div>
 </div>

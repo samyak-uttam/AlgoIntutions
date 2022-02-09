@@ -2,42 +2,41 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
 
-    <title>Login</title>
+  <title>Login</title>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Login</h1>
+  <div class="container">
+    <h1>Login</h1>
 
-        <ul>
-            <% if (typeof errors !='undefined' ) { %>
-                <% for (let i=0; i < errors.length; i++) {%>
-                    <li>
-                        <%= errors[i].message %>
-                    </li>
-                    <% } %>
+    <ul>
+      <% if (typeof errors !='undefined' ) { %>
+        <% for (let i=0; i < errors.length; i++) {%>
+          <li>
+            <%= errors[i].message %>
+          </li>
+        <% } %>
+      <% } %>
+    </ul>
 
-                        <% } %>
-        </ul>
-
-        <form action="/admin/login" method="post">
-            <div>
-                <input type="email" name="email" id="email" placeholder="Email" required>
-            </div>
-            <div>
-                <input type="password" name="password" id="password" placeholder="Password">
-            </div>
-            <div>
-                <input type="submit" value="Login">
-            </div>
-            <a href="/admin/register">Register</a>
-        </form>
-    </div>
+    <form action="/admin/login" method="post">
+      <div>
+        <input type="email" name="email" id="email" placeholder="Email" required>
+      </div>
+      <div>
+        <input type="password" name="password" id="password" placeholder="Password">
+      </div>
+      <div>
+        <input type="submit" value="Login">
+      </div>
+      <a href="/admin/register">Register</a>
+    </form>
+  </div>
 </body>
 
 </html>

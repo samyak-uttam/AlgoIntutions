@@ -32,7 +32,6 @@ exports.protect = async (req, res, next) => {
 
     let userObj = JSON.stringify(user.rows[0]);
     userObj = JSON.parse(userObj);
-    console.log(userObj);
     if (userObj.role == 'user') {
       errors.push({ message: 'Not authorized to access this route' });
       res.render('register', {

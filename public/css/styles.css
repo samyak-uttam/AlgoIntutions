@@ -13,6 +13,10 @@ a {
   text-decoration: none;
 }
 
+pre {
+  font-size: 1.1rem;
+}
+
 .middle-section {
   margin: 1rem 20%;
   display: flex;
@@ -219,4 +223,3 @@ textarea {
   display: flex;
   justify-content: center;
 }
-
