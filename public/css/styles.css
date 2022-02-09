@@ -219,7 +219,7 @@ textarea {
 
 .question-approach-image {
   height: 30rem;
-  width: 30rem;
+  width: auto;
 }
 
 .question-image-cont {

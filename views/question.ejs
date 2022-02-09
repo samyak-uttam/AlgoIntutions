@@ -40,7 +40,8 @@
                     <% if (questionArr[i].imagelinks[0] !="" ) { %>
                       <div class="question-image-cont">
                         <% for (let j=0; j < questionArr[i].imagelinks.length; j++) { %>
-                          <img src="<%= questionArr[i].imagelinks[j]%>" alt="<%=questionArr[i].title%> image">
+                          <img class="question-approach-image" src="<%= questionArr[i].imagelinks[j]%>"
+                            alt="<%=questionArr[i].title%> image">
                           <% } %>
                       </div>
                       <% } %>
