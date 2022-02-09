@@ -14,6 +14,8 @@ CREATE TABLE public.questions
     title character varying,
     difficulty character varying,
     explanation text,
+    examples text,
+    exImageLinks character varying[],
     intuition text,
     approach text,
     imageLinks character varying[],

@@ -18,17 +18,25 @@
       </div>
     </div>
     <pre><p><%= questionArr[0].explanation %></p></pre>
-    <br>
-    <h2>Solution:</h2>
     <% for(let i = 0; i < questionArr.length; i++) { %>
+      <% if (questionArr[i].examples) { %>
+        <pre class="question-examples"><p><%=questionArr[i].examples %></p></pre>
+      <% } %>
+      <% if (questionArr[i].eximagelinks[0] != "") { %>
+        <div class="question-image-cont">
+          <% for (let j = 0; j < questionArr[i].eximagelinks.length; j++) { %>
+            <img src="<%= questionArr[i].eximagelinks[j]%>" alt="<%=questionArr[i].title%> image">
+          <% } %>
+        </div>
+      <% } %>
       <% if (questionArr[i].intuition) { %>
         <pre><p><%= questionArr[i].intuition %></p></pre>
       <% } %>
       <pre><p><%= questionArr[i].approach %></p></pre>
       <% if (questionArr[i].imagelinks[0] != "") { %>
         <div class="question-image-cont">
-          <% for (let i = 0; i < questionArr[i].imagelinks.length; i++) { %>
-            <img class="question-approach-image" src="<%= questionArr[i].imagelinks[i]%>" alt="<%=questionArr[i].title%> image">
+          <% for (let j = 0; i < questionArr[j].imagelinks.length; j++) { %>
+            <img class="question-approach-image" src="<%= questionArr[i].imagelinks[j]%>" alt="<%=questionArr[i].title%> image">
           <% } %>
         </div>
       <% } %>

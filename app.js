@@ -163,6 +163,8 @@ app.get('/question/:questionTitle', async function (req, res) {
       while (question.continuedid != null) {
         question = await dbOperations.readQuesById(
           [
+            'examples',
+            'exImageLinks',
             'intuition',
             'approach',
             'imageLinks',
@@ -418,14 +420,16 @@ function getBodyPropertiesAndValues(dataObj) {
   for (const property in dataObj) {
     questionPropertiesArr.push(property);
     let dataValue;
-    if (property === 'imageLinks') {
+    if (property === "exImageLinks") {
       dataValue = dataObj[property].split(' ');
-    } else if (property === 'tags') {
+    } else if (property === "imageLinks") {
+      dataValue = dataObj[property].split(' ');
+    } else if (property === "tags") {
       dataValue = dataObj[property].split(',');
     } else {
       dataValue = dataObj[property];
     }
-    if (dataValue === '') {
+    if (dataValue === "") {
       questionValuesArr.push(null);
     } else {
       questionValuesArr.push(dataValue);
