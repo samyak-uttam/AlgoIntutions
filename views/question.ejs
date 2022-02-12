@@ -47,9 +47,15 @@
       <div class="container">
         <nav>
           <div class="nav nav-tabs" id="nav-tab">
-            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#cpp-code_<%= i %>" type="button">C++</button>
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#java-code_<%= i %>" type="button">Java</button>
-            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#python-code_<%= i %>" type="button">Python</button>
+            <% if (questionArr[i].codecpp) { %>
+              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#cpp-code_<%= i %>" type="button">C++</button>
+            <% } %>
+            <% if (questionArr[i].codejava) { %>
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#java-code_<%= i %>" type="button">Java</button>
+            <% } %>
+            <% if (questionArr[i].codepython) { %>
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#python-code_<%= i %>" type="button">Python</button>
+            <% } %>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
