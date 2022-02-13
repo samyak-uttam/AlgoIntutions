@@ -442,15 +442,12 @@ function getBodyPropertiesAndValues(dataObj) {
       questionValuesArr.push(dataValue);
     }
   }
-  console.log(questionPropertiesArr);
-  console.log(questionValuesArr);
 
   return {
     questionPropertiesArr,
     questionValuesArr
   };
 }
-console.log('app.js', ""+process.env.JWT_SECRET, `${process.env.JWT_SECRET}`)
 const sendTokenResponse = (res, userId) => {
   const token = jwt.sign({ id: userId }, `${process.env.JWT_SECRET}`, {
     expiresIn: `${process.env.JWT_EXPIRE}`
