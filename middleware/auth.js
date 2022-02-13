@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const dbOperations = require('../utils/dbOperations');
+const dbOperations = require('../dbOperations');
 
 // Protect routes
 exports.protect = async (req, res, next) => {

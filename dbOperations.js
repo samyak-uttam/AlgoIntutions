@@ -1,7 +1,7 @@
 const { Client } = require('pg');
 const dotenv = require('dotenv');
 dotenv.config();
-
+console.log('db operations', process.env.JWT_SECRET)
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: {

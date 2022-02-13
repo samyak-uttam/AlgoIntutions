@@ -3,7 +3,7 @@ dotenv.config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const dbOperations = require(__dirname + '/utils/dbOperations.js');
+const dbOperations = require('./dbOperations');
 var favicon = require('serve-favicon');
 const bcrypt = require('bcryptjs');
 const { protect } = require('./middleware/auth');
@@ -450,7 +450,7 @@ function getBodyPropertiesAndValues(dataObj) {
     questionValuesArr
   };
 }
-console.log(process.env.JWT_SECRET)
+console.log('app.js', process.env.JWT_SECRET, `${process.env.JWT_SECRET}`)
 const sendTokenResponse = (res, userId) => {
   const token = jwt.sign({ id: userId }, `${process.env.JWT_SECRET}`, {
     expiresIn: `${process.env.JWT_EXPIRE}`
