@@ -216,6 +216,7 @@ textarea {
   gap: 2rem;
   align-items: center;
   margin: 10px auto;
+
 }
 
 .pagination-cont {
@@ -225,4 +226,67 @@ textarea {
 
 .questions-list-home {
   min-height: calc(100vh - 13.8rem);
+}
+
+/* Media queries */
+@media screen and (max-width: 400px) {
+  .middle-section {
+    margin: 1rem 2%;
+    /* display: flex;
+    flex-direction: column;
+    font-size: 1.1rem; */
+  }
+
+  .topics-tag-list {
+    margin: 1rem 0; 
+    overflow: auto;
+    /* height: 5rem; */
+  }
+
+  .topics-list-card {
+    margin: 0.1rem auto; 
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 1.5rem;
+  }
+
+  .topic-tag {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.5rem;
+  }
+
+  .topic-tag > a {
+    font-size: 0.9rem;
+  }
+
+  .questions-card {
+    margin-bottom: 1rem;
+  }
+
+  .card {
+    font-size: 1rem;
+  }
+
+  .question-approach-image {
+    height: 18rem;
+    width: auto;
+  }
+
+  .question-image-cont > img {
+    height: 15rem;
+  }
+
+  .container-fluid > a {
+    font-size: 1.5rem;
+    padding-left: 0.2rem;
+  }
+
+  .card-body > * {
+    font-size: 0.9rem;
+  }
+
+  .card-body > h2 {
+    font-size: 1.5rem;
+  }
 }
