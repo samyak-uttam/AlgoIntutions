@@ -269,12 +269,15 @@ textarea {
   }
 
   .question-approach-image {
-    height: 18rem;
-    width: auto;
+    width:100%;
+    max-width:100vw;
+    height: auto;
   }
 
   .question-image-cont > img {
-    height: 15rem;
+    width:100%;
+    max-width:100vw;
+    height: auto;
   }
 
   .container-fluid > a {
