@@ -229,7 +229,7 @@ textarea {
 }
 
 /* Media queries */
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 500px) {
   .middle-section {
     margin: 1rem 2%;
     /* display: flex;
